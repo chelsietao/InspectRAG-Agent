@@ -1,0 +1,32 @@
+{
+  "dataset": "MVTec AD bottle",
+  "status": "passed",
+  "manifest_sha256": "fba281387f9d44ba621cf7cb411244e13eb1c7f47bc405efe3184c40cc3883bb",
+  "counts_by_group": {
+    "ground_truth/broken_large": 20,
+    "ground_truth/broken_small": 22,
+    "ground_truth/contamination": 21,
+    "test/broken_large": 20,
+    "test/broken_small": 22,
+    "test/contamination": 21,
+    "test/good": 20,
+    "train/good": 209
+  },
+  "inspection_images": 292,
+  "masks": 63,
+  "image_sizes": [
+    "900x900"
+  ],
+  "modes": {
+    "L": 63,
+    "RGB": 292
+  },
+  "duplicate_image_groups": [],
+  "cross_split_duplicate_groups": [],
+  "errors": [],
+  "limitations": [
+    "雜湊檢查只能找出相同像素，無法排除近似圖片或同一物件的不同拍攝。",
+    "檔案可讀與標註對應不代表已驗證標註的語意正確性。",
+    "本階段尚未建立模型、校準切分或執行模型評估。"
+  ]
+}

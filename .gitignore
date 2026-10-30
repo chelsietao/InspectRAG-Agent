@@ -1,0 +1,18 @@
+# Local source data and generated private/runtime artifacts
+/bottle/
+/data/raw/
+/.venv/
+.env
+.env.*
+!.env.example
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+/models/
+/indexes/
+/artifacts/
+*.sqlite
+*.sqlite3
