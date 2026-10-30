@@ -1,0 +1,458 @@
+[
+  {
+    "id": "dev-01",
+    "query": "資料集提供哪些圖片與標註",
+    "relevant_chunks": [
+      "dataset-content"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "dataset-content",
+      "data-integrity",
+      "download-folders",
+      "split-test",
+      "use-split-leakage"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.02246475004358217,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-02",
+    "query": "瓶子資料夾分成哪幾個目錄",
+    "relevant_chunks": [
+      "download-folders"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "download-folders",
+      "use-cli-predict",
+      "dataset-content",
+      "dataset-license",
+      "use-split-leakage"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006966374989133328,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-03",
+    "query": "PatchCore 為什麼能只用正常樣本建立模型",
+    "relevant_chunks": [
+      "method-nominal"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "method-nominal",
+      "method-neighbor",
+      "use-local-files",
+      "split-fit",
+      "use-training"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.007331041037105024,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-04",
+    "query": "目前模型骨幹與輸入大小是什麼",
+    "relevant_chunks": [
+      "config-backbone"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "config-backbone",
+      "use-training",
+      "download-folders",
+      "method-neighbor",
+      "use-local-files"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.007030291948467493,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-05",
+    "query": "判斷異常的門檻怎麼訂",
+    "relevant_chunks": [
+      "config-threshold"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "config-threshold",
+      "metrics-confusion",
+      "limit-calibration",
+      "method-neighbor",
+      "dataset-content"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006933833006769419,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-06",
+    "query": "數值 0.8 能當成百分之八十瑕疵機率嗎",
+    "relevant_chunks": [
+      "config-no-probability"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "config-no-probability",
+      "metrics-confusion",
+      "split-test",
+      "metrics-latency",
+      "config-backbone"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.007020749966613948,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-07",
+    "query": "179 與 30 張圖片各拿來做什麼",
+    "relevant_chunks": [
+      "split-fit"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "split-fit",
+      "split-test",
+      "dataset-content",
+      "data-counts",
+      "config-threshold"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006967708992306143,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-08",
+    "query": "測試集有多少正常和異常圖",
+    "relevant_chunks": [
+      "split-test"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "split-test",
+      "metrics-confusion",
+      "dataset-content",
+      "config-threshold",
+      "download-folders"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.0069054579944349825,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-09",
+    "query": "像素級評估是用什麼解析度",
+    "relevant_chunks": [
+      "metrics-resolution"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "metrics-resolution",
+      "metrics-ranking",
+      "data-integrity",
+      "split-test",
+      "dataset-content"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006975374999456108,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-10",
+    "query": "單張圖片分析要用什麼指令",
+    "relevant_chunks": [
+      "use-cli-predict"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "split-test",
+      "use-cli-predict",
+      "data-integrity",
+      "use-split-leakage",
+      "dataset-content"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 0.5,
+    "seconds": 0.007280915975570679,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-11",
+    "query": "如何避免搜尋庫包含測試資料",
+    "relevant_chunks": [
+      "use-split-leakage"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "use-split-leakage",
+      "split-test",
+      "data-integrity",
+      "limit-calibration",
+      "download-folders"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.0069738749880343676,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "dev-12",
+    "query": "引用編號存在就代表回答有根據嗎",
+    "relevant_chunks": [
+      "use-citation"
+    ],
+    "split": "dev",
+    "returned_chunks": [
+      "use-citation",
+      "use-local-files",
+      "use-cli-baseline",
+      "config-coreset",
+      "use-memory"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.007253625022713095,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-01",
+    "query": "這批影像能不能拿去商業使用",
+    "relevant_chunks": [
+      "dataset-license"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "dataset-license",
+      "limit-generalization",
+      "config-threshold",
+      "use-split-leakage",
+      "method-nominal"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.00699599995277822,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-02",
+    "query": "找局部最近鄰跟異常圖有什麼關係",
+    "relevant_chunks": [
+      "method-neighbor"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "method-neighbor",
+      "config-coreset",
+      "method-nominal",
+      "config-no-probability",
+      "metrics-confusion"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.00689716701162979,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-03",
+    "query": "E5 的 query 與 passage 前綴應怎麼用",
+    "relevant_chunks": [
+      "embedding-e5"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "embedding-e5",
+      "config-backbone",
+      "use-cli-predict",
+      "method-neighbor",
+      "use-cli-baseline"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006777959002647549,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-04",
+    "query": "FAISS 在這個專題負責哪種工作",
+    "relevant_chunks": [
+      "index-faiss"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "index-faiss",
+      "use-training",
+      "use-local-files",
+      "use-no-root-cause",
+      "config-coreset"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006731415982358158,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-05",
+    "query": "本機核心集抽樣比例和特徵維度是多少",
+    "relevant_chunks": [
+      "config-coreset"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "config-coreset",
+      "config-backbone",
+      "split-fit",
+      "config-no-probability",
+      "use-local-files"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006745040998794138,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-06",
+    "query": "每張熱圖的紅色可以拿來比較嗎",
+    "relevant_chunks": [
+      "config-heatmap"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "config-heatmap",
+      "metrics-resolution",
+      "use-cli-predict",
+      "use-local-files",
+      "use-cli-baseline"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006630958989262581,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-07",
+    "query": "這次 Image AUROC 和 Pixel AUROC 分別是多少",
+    "relevant_chunks": [
+      "metrics-ranking"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "metrics-ranking",
+      "metrics-resolution",
+      "dataset-content",
+      "data-counts",
+      "use-locked-env"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.0068522500223480165,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-08",
+    "query": "正常誤報和異常漏檢各有幾張",
+    "relevant_chunks": [
+      "metrics-confusion"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "metrics-confusion",
+      "dataset-content",
+      "limit-calibration",
+      "split-test",
+      "use-checkpoint"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006781791977118701,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-09",
+    "query": "p95 等待時間包含模型載入嗎",
+    "relevant_chunks": [
+      "metrics-latency"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "metrics-latency",
+      "use-checkpoint",
+      "use-local-files",
+      "use-cli-predict",
+      "data-counts"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.00663004198577255,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-10",
+    "query": "正常校準圖的最大分數能保證未來都不誤報嗎",
+    "relevant_chunks": [
+      "limit-calibration"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "limit-calibration",
+      "config-threshold",
+      "split-fit",
+      "config-heatmap",
+      "split-test"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006699416029732674,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-11",
+    "query": "檔案都能開啟，是否代表已檢查標註語意正確",
+    "relevant_chunks": [
+      "data-integrity"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "data-integrity",
+      "use-citation",
+      "use-local-files",
+      "use-checkpoint",
+      "dataset-content"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.0066950839827768505,
+    "citation_ids_valid": true
+  },
+  {
+    "id": "heldout-12",
+    "query": "可不可以從目前資料判定瓶子的製程根因與出貨允收",
+    "relevant_chunks": [
+      "use-no-root-cause"
+    ],
+    "split": "heldout",
+    "returned_chunks": [
+      "use-no-root-cause",
+      "download-folders",
+      "limit-generalization",
+      "limit-calibration",
+      "use-cli-baseline"
+    ],
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "seconds": 0.006831166974734515,
+    "citation_ids_valid": true
+  }
+]

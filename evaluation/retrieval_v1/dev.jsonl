@@ -1,0 +1,12 @@
+{"id": "dev-01", "query": "資料集提供哪些圖片與標註", "relevant_chunks": ["dataset-content"]}
+{"id": "dev-02", "query": "瓶子資料夾分成哪幾個目錄", "relevant_chunks": ["download-folders"]}
+{"id": "dev-03", "query": "PatchCore 為什麼能只用正常樣本建立模型", "relevant_chunks": ["method-nominal"]}
+{"id": "dev-04", "query": "目前模型骨幹與輸入大小是什麼", "relevant_chunks": ["config-backbone"]}
+{"id": "dev-05", "query": "判斷異常的門檻怎麼訂", "relevant_chunks": ["config-threshold"]}
+{"id": "dev-06", "query": "數值 0.8 能當成百分之八十瑕疵機率嗎", "relevant_chunks": ["config-no-probability"]}
+{"id": "dev-07", "query": "179 與 30 張圖片各拿來做什麼", "relevant_chunks": ["split-fit"]}
+{"id": "dev-08", "query": "測試集有多少正常和異常圖", "relevant_chunks": ["split-test"]}
+{"id": "dev-09", "query": "像素級評估是用什麼解析度", "relevant_chunks": ["metrics-resolution"]}
+{"id": "dev-10", "query": "單張圖片分析要用什麼指令", "relevant_chunks": ["use-cli-predict"]}
+{"id": "dev-11", "query": "如何避免搜尋庫包含測試資料", "relevant_chunks": ["use-split-leakage"]}
+{"id": "dev-12", "query": "引用編號存在就代表回答有根據嗎", "relevant_chunks": ["use-citation"]}

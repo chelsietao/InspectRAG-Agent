@@ -1,0 +1,83 @@
+{
+  "query": "異常分數可以當成瑕疵機率嗎",
+  "status": "retrieved_candidates",
+  "index_version": "documents-v1",
+  "matches": [
+    {
+      "chunk_id": "config-no-probability",
+      "source_id": "project-guide",
+      "title": "分數與機率",
+      "text": "異常分數（Anomaly Score）表示目前特徵與正常外觀的偏離程度，數值受模型和設定影響，尚未做機率校準，因此 0.8 或其他分數都不能解讀成瑕疵機率。",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/phase2_vision.md",
+      "source_locator": "phase-two guide",
+      "content_type": "authored_summary",
+      "corpus_version": "knowledge-v1",
+      "text_sha256": "d018540427684ef59f0be39d177fe3d92888f5d721db1768412face7606401ec",
+      "dense_similarity": 0.9295573234558105,
+      "lexical_similarity": 0.25744304060935974,
+      "source_title": "第二階段操作與限制",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "chunk_id": "method-neighbor",
+      "source_id": "anomalib",
+      "title": "最近鄰與異常分數",
+      "text": "Anomalib 的 PatchCore 擷取預訓練骨幹的中間層特徵，推論時搜尋特徵庫中的最近鄰（Nearest Neighbor），以局部特徵距離產生異常分數與異常分布圖。",
+      "source_url": "https://anomalib.readthedocs.io/en/latest/markdown/guides/reference/models/image/patchcore.html",
+      "source_locator": "PatchCore / Architecture",
+      "content_type": "authored_summary",
+      "corpus_version": "knowledge-v1",
+      "text_sha256": "0800b1492d986e232bd815a71d83ce994acd9054f405486e8c505e576552ac56",
+      "dense_similarity": 0.8523845672607422,
+      "lexical_similarity": 0.1294606328010559,
+      "source_title": "Anomalib PatchCore 方法說明",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "chunk_id": "config-threshold",
+      "source_id": "project-guide",
+      "title": "影像判斷門檻",
+      "text": "影像門檻（Image Threshold）採 30 張正常校準圖片的最高分數，約為 10.19447，分數大於門檻才判為異常，門檻在讀取測試結果前固定，沒有使用測試標籤調整。",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/phase2_vision.md",
+      "source_locator": "phase-two guide",
+      "content_type": "authored_summary",
+      "corpus_version": "knowledge-v1",
+      "text_sha256": "6b4f6e5eb7ab467005a8e1678c0e9d1912b62ae68fb377c2809ce482d16dc526",
+      "dense_similarity": 0.8530431985855103,
+      "lexical_similarity": 0.017557267099618912,
+      "source_title": "第二階段操作與限制",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "chunk_id": "split-test",
+      "source_id": "project-guide",
+      "title": "保留測試資料",
+      "text": "原始測試集（Test Set）有 83 張圖片，其中 20 張正常、63 張異常，只在模型與校準規則固定後評估，瑕疵遮罩只供評估和圖像對照。",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/phase2_vision.md",
+      "source_locator": "phase-two guide",
+      "content_type": "authored_summary",
+      "corpus_version": "knowledge-v1",
+      "text_sha256": "72a78a187f1426f2fb03f07e2e6855ed7eddfcbc73ba8d0c963c573103ed2ed2",
+      "dense_similarity": 0.8528891801834106,
+      "lexical_similarity": 0.01957208476960659,
+      "source_title": "第二階段操作與限制",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "chunk_id": "metrics-confusion",
+      "source_id": "project-metrics",
+      "title": "誤報與漏檢數量",
+      "text": "固定門檻下，20 張正常測試圖片沒有誤報，63 張異常測試圖片找出 61 張、漏檢 2 張，異常召回率（Anomaly Recall）為 61 ÷ 63，約 96.83%。",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/evaluation/vision_baseline_v1/metrics.json",
+      "source_locator": "aggregate metrics",
+      "content_type": "authored_summary",
+      "corpus_version": "knowledge-v1",
+      "text_sha256": "7ea190a369bb54bf90b6999176dc10dd81357e8928dd877cecd84bd2cc4309de",
+      "dense_similarity": 0.8678062558174133,
+      "lexical_similarity": 0.00968221202492714,
+      "source_title": "第二階段整體評估",
+      "review_status": "assistant_source_checked_pending_user_review"
+    }
+  ],
+  "note": "這是檢索候選，並非已驗證的答案。相似度不代表證據足夠，生成、拒答與主張支持判斷尚未實作。"
+}

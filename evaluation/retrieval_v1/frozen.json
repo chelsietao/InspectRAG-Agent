@@ -1,0 +1,7 @@
+{
+  "question_file_sha256": {
+    "dev.jsonl": "5c7d345978f905adced678c95cb71b43c218b2ed995539362f72e6cd1324d3da",
+    "heldout.jsonl": "e02b3f03ad1e635543bf9a50971d0d5b9a279b7ce6733dee5490b9fed85cac7b"
+  },
+  "note": "助理依知識庫內容指定相關段落，先固定題集再執行，非獨立外部評測，尚待使用者審閱。"
+}

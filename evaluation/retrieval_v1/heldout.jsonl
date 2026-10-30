@@ -1,0 +1,12 @@
+{"id": "heldout-01", "query": "這批影像能不能拿去商業使用", "relevant_chunks": ["dataset-license"]}
+{"id": "heldout-02", "query": "找局部最近鄰跟異常圖有什麼關係", "relevant_chunks": ["method-neighbor"]}
+{"id": "heldout-03", "query": "E5 的 query 與 passage 前綴應怎麼用", "relevant_chunks": ["embedding-e5"]}
+{"id": "heldout-04", "query": "FAISS 在這個專題負責哪種工作", "relevant_chunks": ["index-faiss"]}
+{"id": "heldout-05", "query": "本機核心集抽樣比例和特徵維度是多少", "relevant_chunks": ["config-coreset"]}
+{"id": "heldout-06", "query": "每張熱圖的紅色可以拿來比較嗎", "relevant_chunks": ["config-heatmap"]}
+{"id": "heldout-07", "query": "這次 Image AUROC 和 Pixel AUROC 分別是多少", "relevant_chunks": ["metrics-ranking"]}
+{"id": "heldout-08", "query": "正常誤報和異常漏檢各有幾張", "relevant_chunks": ["metrics-confusion"]}
+{"id": "heldout-09", "query": "p95 等待時間包含模型載入嗎", "relevant_chunks": ["metrics-latency"]}
+{"id": "heldout-10", "query": "正常校準圖的最大分數能保證未來都不誤報嗎", "relevant_chunks": ["limit-calibration"]}
+{"id": "heldout-11", "query": "檔案都能開啟，是否代表已檢查標註語意正確", "relevant_chunks": ["data-integrity"]}
+{"id": "heldout-12", "query": "可不可以從目前資料判定瓶子的製程根因與出貨允收", "relevant_chunks": ["use-no-root-cause"]}
