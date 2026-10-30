@@ -1,0 +1,158 @@
+{
+  "threshold": 10.19447135925293,
+  "heatmap_upper": 9.231249809265137,
+  "rule": "max of held-out normal calibration image scores",
+  "rows": [
+    {
+      "path": "train/good/007.png",
+      "score": 7.7177300453186035,
+      "seconds": 0.026001541991718113
+    },
+    {
+      "path": "train/good/020.png",
+      "score": 7.522861480712891,
+      "seconds": 0.02072895795572549
+    },
+    {
+      "path": "train/good/024.png",
+      "score": 7.927497386932373,
+      "seconds": 0.013756999978795648
+    },
+    {
+      "path": "train/good/025.png",
+      "score": 7.267850875854492,
+      "seconds": 0.014085458999034017
+    },
+    {
+      "path": "train/good/026.png",
+      "score": 7.395512580871582,
+      "seconds": 0.014200582983903587
+    },
+    {
+      "path": "train/good/038.png",
+      "score": 7.576868534088135,
+      "seconds": 0.013864709006156772
+    },
+    {
+      "path": "train/good/046.png",
+      "score": 10.19447135925293,
+      "seconds": 0.013787499978207052
+    },
+    {
+      "path": "train/good/050.png",
+      "score": 6.965307235717773,
+      "seconds": 0.014064582996070385
+    },
+    {
+      "path": "train/good/051.png",
+      "score": 7.863629341125488,
+      "seconds": 0.014251874992623925
+    },
+    {
+      "path": "train/good/054.png",
+      "score": 7.406983375549316,
+      "seconds": 0.013705749996006489
+    },
+    {
+      "path": "train/good/081.png",
+      "score": 7.644681930541992,
+      "seconds": 0.013606666994746774
+    },
+    {
+      "path": "train/good/084.png",
+      "score": 7.498600006103516,
+      "seconds": 0.012836292036809027
+    },
+    {
+      "path": "train/good/092.png",
+      "score": 8.056070327758789,
+      "seconds": 0.0130664580501616
+    },
+    {
+      "path": "train/good/101.png",
+      "score": 7.477860450744629,
+      "seconds": 0.013611541013233364
+    },
+    {
+      "path": "train/good/104.png",
+      "score": 7.971797943115234,
+      "seconds": 0.013560458028223366
+    },
+    {
+      "path": "train/good/115.png",
+      "score": 7.752976417541504,
+      "seconds": 0.013966209022328258
+    },
+    {
+      "path": "train/good/128.png",
+      "score": 7.647715091705322,
+      "seconds": 0.013785500021185726
+    },
+    {
+      "path": "train/good/131.png",
+      "score": 8.696720123291016,
+      "seconds": 0.013823750021401793
+    },
+    {
+      "path": "train/good/138.png",
+      "score": 7.493755340576172,
+      "seconds": 0.013621499994769692
+    },
+    {
+      "path": "train/good/148.png",
+      "score": 7.64631462097168,
+      "seconds": 0.01348854199750349
+    },
+    {
+      "path": "train/good/152.png",
+      "score": 7.836400985717773,
+      "seconds": 0.013764875009655952
+    },
+    {
+      "path": "train/good/156.png",
+      "score": 7.760923385620117,
+      "seconds": 0.014013374981004745
+    },
+    {
+      "path": "train/good/161.png",
+      "score": 7.44860315322876,
+      "seconds": 0.013468249992001802
+    },
+    {
+      "path": "train/good/169.png",
+      "score": 7.206335544586182,
+      "seconds": 0.013480667024850845
+    },
+    {
+      "path": "train/good/177.png",
+      "score": 7.628281116485596,
+      "seconds": 0.013520542008336633
+    },
+    {
+      "path": "train/good/186.png",
+      "score": 8.269397735595703,
+      "seconds": 0.013246084039565176
+    },
+    {
+      "path": "train/good/189.png",
+      "score": 7.688690662384033,
+      "seconds": 0.013629332999698818
+    },
+    {
+      "path": "train/good/195.png",
+      "score": 7.705564975738525,
+      "seconds": 0.014566917030606419
+    },
+    {
+      "path": "train/good/197.png",
+      "score": 8.179966926574707,
+      "seconds": 0.013417834008578211
+    },
+    {
+      "path": "train/good/204.png",
+      "score": 7.5963897705078125,
+      "seconds": 0.013132958963979036
+    }
+  ],
+  "note": "30 個正常校準樣本的最大值，不代表未來資料的假陽性率保證。"
+}

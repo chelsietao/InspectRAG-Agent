@@ -9,7 +9,7 @@
 ```bash
 .venv/bin/python --version
 .venv/bin/python scripts/validate_data.py --root bottle --output data/manifests
-.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m unittest discover -s tests -p test_validate_data.py -v
 ```
 
 預設直譯器（Interpreter）設定為 `.venv/bin/python`，若視窗尚未切換，可從命令選擇區選擇 `Python: Select Interpreter`，再指定此環境。
@@ -22,7 +22,7 @@
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements-data.txt
 .venv/bin/python scripts/validate_data.py --root bottle --output data/manifests
-.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m unittest discover -s tests -p test_validate_data.py -v
 ```
 
 目前 Mac 的環境由 Codex 提供的 Python 3.12 建立，原始直譯器若被移除，需要用自己的 Python 3.12 重建 `.venv`，隔離環境本身不會上傳 GitHub。

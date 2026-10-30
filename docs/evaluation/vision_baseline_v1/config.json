@@ -1,0 +1,17 @@
+{
+  "backbone": "resnet18",
+  "layers": [
+    "layer2",
+    "layer3"
+  ],
+  "input_size": 128,
+  "coreset_sampling_ratio": 0.01,
+  "num_neighbors": 1,
+  "calibration_count": 30,
+  "seed": 42,
+  "device": "cpu",
+  "threads": 4,
+  "image_threshold_rule": "max of held-out normal calibration image scores",
+  "pixel_threshold": null,
+  "heatmap_scale_rule": "maximum calibration anomaly-map value"
+}

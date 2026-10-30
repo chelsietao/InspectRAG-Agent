@@ -1,0 +1,63 @@
+{
+  "created_at_utc": "2026-10-30T09:52:49.772335+00:00",
+  "source_commit_at_run": "bcf23448700d938cefa2bc38bbfb82dbebd49b31",
+  "script_sha256": "018f0add7ee822db0a3e760418e757b90bbba37da841e60eee9d27a36913836c",
+  "utils_sha256": "86f9d65d6fc36847d86cf22d06f871c1b02d5d8e8c2afc1f1e123a3f9604d34a",
+  "data_manifest_sha256": "38aa16c188a0e22d9f6c8543e28f34c354b5ecd9d38aad2bdd4f058d415a522e",
+  "config": {
+    "backbone": "resnet18",
+    "layers": [
+      "layer2",
+      "layer3"
+    ],
+    "input_size": 128,
+    "coreset_sampling_ratio": 0.01,
+    "num_neighbors": 1,
+    "calibration_count": 30,
+    "seed": 42,
+    "device": "cpu",
+    "threads": 4,
+    "image_threshold_rule": "max of held-out normal calibration image scores",
+    "pixel_threshold": null,
+    "heatmap_scale_rule": "maximum calibration anomaly-map value"
+  },
+  "train_images": 179,
+  "calibration_images": 30,
+  "test_images": 83,
+  "memory_bank_shape": [
+    458,
+    384
+  ],
+  "checkpoint_sha256": "733ac3ad370cc76a585f0461195e4e044b9225e2b0328fbc3c842180d4767e15",
+  "image_auroc": 0.996031746031746,
+  "pixel_auroc_128": 0.966502604072728,
+  "pixel_evaluation_resolution": [
+    128,
+    128
+  ],
+  "image_threshold": 10.19447135925293,
+  "test_confusion": {
+    "tn": 20,
+    "fp": 0,
+    "fn": 2,
+    "tp": 61
+  },
+  "normal_test_false_positive_rate": 0.0,
+  "anomaly_test_recall": 0.9682539682539683,
+  "fit_seconds_excluding_weight_load": 2.741096457990352,
+  "inference_p50_seconds": 0.013273833028506488,
+  "inference_p95_seconds": 0.014431995793711393,
+  "latency_scope": "warm CPU inference including image decode and preprocessing, excluding checkpoint load and saving",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "versions": {
+    "anomalib": "2.7.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "timm": "1.0.30",
+    "numpy": "2.5.4",
+    "scikit-learn": "1.9.1",
+    "Pillow": "12.3.0"
+  },
+  "source_tree_state_at_run": "Vision files were uncommitted on top of source_commit_at_run. Verify recorded script_sha256 and utils_sha256 against the committed files."
+}
