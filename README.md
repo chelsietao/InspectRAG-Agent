@@ -211,6 +211,24 @@ flowchart TD
 
 ## 7. 圖片分析怎麼做
 
+### PatchCore 的研究背景與原始來源
+
+PatchCore 是 Karsten Roth 等六位研究人員提出的工業影像異常偵測演算法（Industrial Visual Anomaly Detection），論文列出的研究單位包含德國圖賓根大學（University of Tübingen）與亞馬遜雲端服務（Amazon AWS），並註明研究在 Amazon AWS 研究實習期間進行。[原始論文與研究單位](https://arxiv.org/html/2106.08265v2)
+
+| 項目 | 資訊 |
+|---|---|
+| 論文名稱 | Towards Total Recall in Industrial Anomaly Detection |
+| 作者 | Karsten Roth、Latha Pemula、Joaquin Zepeda、Bernhard Schölkopf、Thomas Brox、Peter Gehler |
+| 首次公開 | 2021 年 6 月 15 日，於 arXiv 公開第一版 |
+| 正式發表 | 2022 年電腦視覺與模式辨識會議（IEEE/CVF Conference on Computer Vision and Pattern Recognition，CVPR） |
+| 研究領域 | 電腦視覺（Computer Vision）、工業異常偵測（Industrial Anomaly Detection） |
+| 免費閱讀 | [arXiv 論文頁面](https://arxiv.org/abs/2106.08265)、[論文全文](https://arxiv.org/html/2106.08265v2) |
+| 原作者程式碼 | [Amazon Science 官方 GitHub 儲存庫](https://github.com/amazon-science/patchcore-inspection) |
+
+首次公開日期與作者名單可在 [arXiv 紀錄](https://arxiv.org/abs/2106.08265)核對，正式發表資訊與原作者程式碼可參考 [官方儲存庫](https://github.com/amazon-science/patchcore-inspection)。
+
+我把 PatchCore 作為這個專題的視覺基準（Vision Baseline），目前使用 Anomalib 提供的實作（Implementation），本機的 ResNet18、輸入解析度與特徵庫設定會依實驗紀錄說明，原作者方法與本專題的整合工作也會分開註記。
+
 ### 7.1 先建立一個能重跑的基準
 
 我會先用 PatchCore 作為基準方法（Baseline），透過預訓練模型（Pretrained Model）取出圖片局部特徵，再用正常圖片建立特徵庫（Memory Bank），分析時比較新圖片與正常特徵的距離。[Anomalib 方法說明](https://anomalib.readthedocs.io/en/latest/markdown/guides/reference/models/image/patchcore.html)
@@ -597,7 +615,8 @@ InspectRAG-Agent/
 ## 21. 參考資料
 
 - [MVTec AD 官方資料集](https://www.mvtec.com/research-teaching/datasets/mvtec-ad)，確認影像、標註與授權。
-- [PatchCore 原始論文](https://openaccess.thecvf.com/content/CVPR2022/html/Roth_Towards_Total_Recall_in_Industrial_Anomaly_Detection_CVPR_2022_paper.html)，理解方法與原始實驗。
+- [PatchCore 原始論文](https://arxiv.org/abs/2106.08265)，核對作者、公開日期、方法與發表資訊。
+- [Amazon Science 的 PatchCore 官方程式碼](https://github.com/amazon-science/patchcore-inspection)，查看原作者實作與使用說明。
 - [Anomalib PatchCore 文件](https://anomalib.readthedocs.io/en/latest/markdown/guides/reference/models/image/patchcore.html)，確認實作元件與設定。
 - [FastAPI 官方文件](https://fastapi.tiangolo.com/)，規劃後端介面與測試。
 - [Sentence Transformers 官方文件](https://www.sbert.net/)，確認文字向量與搜尋方法。
