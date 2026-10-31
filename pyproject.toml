@@ -1,7 +1,7 @@
 [project]
 name = "inspectrag-agent"
 version = "0.1.0"
-description = "Evidence-backed visual inspection workspace - dashboard stage"
+description = "Evidence-backed visual inspection workspace - case memory stage"
 requires-python = ">=3.12,<3.13"
 dependencies = ["Pillow==12.3.0"]
 
@@ -44,4 +44,4 @@ backend = [
 ]
 
 [tool.inspectrag]
-stage = "dashboard"
+stage = "case-memory"

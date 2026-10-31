@@ -1,0 +1,54 @@
+[
+  {
+    "query_path": "test/good/000.png",
+    "query_image": "000.png",
+    "index_version": "normal-images-v1",
+    "matches": [
+      {
+        "path": "train/good/206.png",
+        "sha256": "d8c79bc8793403ad4a731bfda783b34126396f27ded0268392c2eea6ba6d3280",
+        "pixel_sha256": "30fdc2c9bfcf970018a662aad778417b2585aa01b838e6d7a9e0d14339d0887f",
+        "cosine_similarity": 0.9958531856536865
+      },
+      {
+        "path": "train/good/010.png",
+        "sha256": "ad500d6c2c625ecc17f8b276a597f76ce5cabfece6326fd39682b5d6b9192db0",
+        "pixel_sha256": "3cb3f5de7f1afcc877a5f6dfbdd8cd79c0b146c0fce4ef47c591d182cd44e1da",
+        "cosine_similarity": 0.9953122138977051
+      },
+      {
+        "path": "train/good/065.png",
+        "sha256": "e3e3f61e8377655bef0a6f54c775f128d37160ddb78bc53da0a360aac572a21a",
+        "pixel_sha256": "2f2e898191beb6857e04a4d695b5e76c809e262600bb898d720aa5bbda96f956",
+        "cosine_similarity": 0.9953063726425171
+      }
+    ],
+    "note": "結果是外觀相似的正常參考圖，未判定瑕疵類型、根因或允收狀態。"
+  },
+  {
+    "query_path": "test/broken_large/000.png",
+    "query_image": "000.png",
+    "index_version": "normal-images-v1",
+    "matches": [
+      {
+        "path": "train/good/196.png",
+        "sha256": "5b2178c5d9c14f180faa21a3ed4f1f5210b8b9b539eeb31df44df5bb71b181ed",
+        "pixel_sha256": "20e00c30a4214a0bb66db922c7b8b1e4bda514b913014e1c50eece58c21ebd6b",
+        "cosine_similarity": 0.9764832258224487
+      },
+      {
+        "path": "train/good/023.png",
+        "sha256": "5bebcd96862ca137cf0a1be85230cffb0098bd06636747c98dd3109c223dd3a0",
+        "pixel_sha256": "53e1e852130d33408dce881f2eacaf34323e8664a3d55d1746a61d841e9f499e",
+        "cosine_similarity": 0.9759594202041626
+      },
+      {
+        "path": "train/good/208.png",
+        "sha256": "87bd5efa31f4d982b18104060c2a105c3981fa91f47b28b6be8fac2170b1b80d",
+        "pixel_sha256": "5e40e15e915a2acd44eadeeb3e9460e48a74f64c29ee60a648192fc71ecb56a5",
+        "cosine_similarity": 0.9750884771347046
+      }
+    ],
+    "note": "結果是外觀相似的正常參考圖，未判定瑕疵類型、根因或允收狀態。"
+  }
+]

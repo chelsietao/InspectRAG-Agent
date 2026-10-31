@@ -30,6 +30,10 @@ class ReadArgs(StrictModel):
     evidence_ids:list[str]=Field(min_length=1,max_length=3)
 
 
+class MemoryArgs(StrictModel):
+    pass
+
+
 class Claim(StrictModel):
     text:str=Field(min_length=1,max_length=600)
     evidence_ids:list[str]=Field(min_length=1,max_length=5)
@@ -59,12 +63,13 @@ class FinalAnswer(StrictModel):
 
 
 SCHEMAS={'analyze_image':ImageArgs,'search_reference_images':ReferenceArgs,
-         'search_documents':SearchArgs,'read_evidence':ReadArgs,'submit_answer':FinalAnswer}
+         'search_documents':SearchArgs,'read_evidence':ReadArgs,'read_case_memory':MemoryArgs,'submit_answer':FinalAnswer}
 DESCRIPTIONS={
     'analyze_image':'本機分析已由使用者選取的圖片，取得分數、門檻與熱圖，沒有圖片時會回傳缺圖狀態。',
     'search_reference_images':'搜尋最多三張正常參考圖片，結果只代表外觀相近。',
     'search_documents':'搜尋最多三段文件全文與來源，回傳 evidence_id 後可在結論引用。',
     'read_evidence':'補讀本輪搜尋回傳的 doc: 開頭 evidence_ids，搜尋已回傳全文時可省略。',
+    'read_case_memory':'讀取伺服器已綁定案件與來源執行的記憶快照，取得可引用的歷史工具結果及使用者確認觀察，無法指定其他案件或寫入記憶。',
     'submit_answer':'提交最終結果，每項 claims 都需本輪有效 evidence_ids，資料不足或缺圖片需標明。',
 }
 

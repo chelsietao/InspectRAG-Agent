@@ -116,7 +116,7 @@ class BackendTests(unittest.TestCase):
         self.assertEqual(run['result']['score'], 12)
         history = self.client.get(f'/cases/{self.case}/runs').json()
         self.assertEqual(len(history['items']), 1)
-        self.assertIn('not_injected', history['memory_policy'])
+        self.assertEqual(history['memory_policy'], 'explicit_opt_in_case_snapshot_v1')
 
     def test_idempotency_and_conflict(self):
         first = self.submit(request_key='same').json()

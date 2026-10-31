@@ -39,11 +39,16 @@
           <p class="panel-note">目前支援瓶子影像，分數表示與正常外觀的偏離程度，無法解讀成瑕疵機率。</p>
         </section>
         <section class="panel"><div class="panel-heading"><div><span class="eyebrow">NORMAL REFERENCES</span><h2>正常參考圖</h2></div><span id="reference-count" class="tag">尚未搜尋</span></div><div id="reference-list" class="reference-list"><p class="empty-text">搜尋外觀相近的正常圖片，協助對照目前的產品照片。</p></div><p class="panel-note">相似度（Cosine Similarity）用來排序外觀，無法單憑參考圖確認瑕疵成因。</p></section>
+        <section class="panel memory-panel"><div class="panel-heading"><div><span class="eyebrow">CASE MEMORY</span><h2>已確認的觀察</h2></div><span id="fact-count" class="tag">0 筆有效觀察</span></div>
+          <p class="panel-note">例如拍攝時有反光，這些描述會標示為使用者觀察，與工具量測分開引用。</p>
+          <form id="fact-form"><label for="fact-text">補充你確認過的情況</label><textarea id="fact-text" maxlength="400" rows="2" placeholder="例如：拍攝時瓶口有反光，這是拍攝現場的觀察" required></textarea><label class="checkbox-label"><input id="fact-image-scope" type="checkbox" checked>只套用目前圖片</label><label class="checkbox-label"><input id="fact-confirm" type="checkbox" required>我確認這是我提供的觀察，並同意保存</label><button id="save-fact" class="button secondary full-width" type="submit" disabled>保存已確認觀察</button></form>
+          <div id="fact-list" class="fact-list"><p class="empty-text">尚無觀察，模型推測不會加入這份紀錄。</p></div>
+        </section>
       </div>
       <div class="evidence-column">
         <section class="panel question-panel"><div class="panel-heading"><div><span class="eyebrow">EVIDENCE-BASED ASSISTANT</span><h2>帶著問題，查閱來源</h2></div><span class="tag green">RAG + Agent</span></div>
-          <form id="question-form"><label for="question">這次想確認什麼？</label><textarea id="question" maxlength="2000" rows="3" placeholder="例如：異常分數代表什麼，能當成瑕疵機率嗎？" required></textarea><div class="question-suggestions"><button type="button" data-question="異常分數能當成瑕疵機率嗎，請附上來源">分數怎麼看？</button><button type="button" data-question="PatchCore 的判斷門檻如何決定，請說明限制並附上來源">門檻怎麼定？</button></div><label class="checkbox-label"><input id="include-image" type="checkbox" checked>附上目前選取的圖片</label><div class="question-submit"><span class="muted">問答使用 Groq，受免費額度限制</span><button id="ask" class="button primary" type="submit">送出問題 ↑</button></div></form>
-          <p class="panel-note">每次提問使用本次問題與勾選的圖片，案件歷史尚未加入下一輪對話。</p>
+          <form id="question-form"><label for="question">這次想確認什麼？</label><textarea id="question" maxlength="2000" rows="3" placeholder="例如：異常分數代表什麼，能當成瑕疵機率嗎？" required></textarea><div class="question-suggestions"><button type="button" data-question="異常分數能當成瑕疵機率嗎，請附上來源">分數怎麼看？</button><button type="button" data-question="PatchCore 的判斷門檻如何決定，請說明限制並附上來源">門檻怎麼定？</button></div><label class="checkbox-label"><input id="use-memory" type="checkbox" checked>帶入本案件記憶（Case Memory）</label><label class="memory-source-label" for="memory-source">追問來源</label><select id="memory-source" aria-label="選擇追問來源"><option value="">目前圖片最近完成的執行</option></select><p id="memory-preview" class="memory-preview" aria-live="polite">正在讀取記憶範圍…</p><label class="checkbox-label"><input id="include-image" type="checkbox" checked>附上目前選取的圖片</label><div class="question-submit"><span class="muted">問答使用 Groq，受免費額度限制</span><button id="ask" class="button primary" type="submit">送出問題 ↑</button></div></form>
+          <p class="panel-note">勾選帶入記憶後，歷史工具結果與確認的觀察會送至 Groq，未勾選的圖片不會重新分析。</p>
           <div class="answer-heading"><h3>本次回答</h3><select id="answer-select" aria-label="選擇歷史問答"><option value="">尚無問答</option></select></div>
           <div id="answer" class="answer" aria-live="polite"><p class="empty-text">回答會附上引用來源，資料不足時也會說明限制。</p></div>
           <div id="citation-list" class="citation-list"></div>

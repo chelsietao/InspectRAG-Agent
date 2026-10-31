@@ -21,7 +21,7 @@ class Store:
         path.parent.mkdir(parents=True, exist_ok=True)
         with self.connection() as db:
             version = db.execute('PRAGMA user_version').fetchone()[0]
-            if version not in (0, 1):
+            if version not in (0, 1, 2):
                 raise RuntimeError('unsupported_database_version')
             db.executescript('''
                 CREATE TABLE IF NOT EXISTS cases (
@@ -44,7 +44,15 @@ class Store:
                     UNIQUE(case_id, version));
                 CREATE INDEX IF NOT EXISTS images_case ON images(case_id);
                 CREATE INDEX IF NOT EXISTS runs_case ON runs(case_id);
-                PRAGMA user_version=1;
+                CREATE TABLE IF NOT EXISTS case_facts (
+                    id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(id),
+                    image_id TEXT REFERENCES images(id), text TEXT NOT NULL,
+                    confirmed_at TEXT NOT NULL, retracted_at TEXT);
+                CREATE TABLE IF NOT EXISTS run_contexts (
+                    run_id TEXT PRIMARY KEY REFERENCES runs(id),
+                    request_json TEXT NOT NULL, snapshot_json TEXT);
+                CREATE INDEX IF NOT EXISTS facts_case ON case_facts(case_id);
+                PRAGMA user_version=2;
             ''')
 
     @contextmanager
@@ -62,10 +70,11 @@ class Store:
             db.close()
 
     def list(self, table, case_id=None):
-        assert table in ('cases', 'images', 'runs', 'reports')
+        assert table in ('cases', 'images', 'runs', 'reports', 'case_facts')
+        ordering = 'confirmed_at' if table == 'case_facts' else 'created_at'
         with self.connection() as db:
             rows = db.execute(f'SELECT * FROM {table}' + (' WHERE case_id=?' if case_id else '')
-                              + ' ORDER BY created_at,id', (case_id,) if case_id else ()).fetchall()
+                              + f' ORDER BY {ordering},id', (case_id,) if case_id else ()).fetchall()
         return [self.decode(row) for row in rows]
 
     @staticmethod
@@ -80,7 +89,7 @@ class Store:
         return data
 
     def get(self, table, item_id, case_id=None):
-        assert table in ('cases', 'images', 'runs', 'reports')
+        assert table in ('cases', 'images', 'runs', 'reports', 'case_facts')
         with self.connection() as db:
             row = db.execute(f'SELECT * FROM {table} WHERE id=?'
                              + (' AND case_id=?' if case_id else ''),
@@ -99,7 +108,7 @@ class Store:
                        (image_id, case_id, digest, width, height, now()))
         return self.get('images', image_id, case_id)
 
-    def submit(self, case_id, image_id, kind, question, request_key, fingerprint):
+    def submit(self, case_id, image_id, kind, question, request_key, fingerprint, context_request=None):
         with self.connection() as db:
             db.execute('BEGIN IMMEDIATE')
             row = db.execute('SELECT * FROM runs WHERE case_id=? AND request_key=?',
@@ -108,10 +117,18 @@ class Store:
                 if row['fingerprint'] != fingerprint:
                     raise ValueError('idempotency_conflict')
                 return self.decode(row), False
+            snapshot = None
+            if context_request and context_request.get('enabled'):
+                from app.case_memory import build_snapshot
+                snapshot = build_snapshot(db, case_id, context_request.get('scope_image_id') or image_id,
+                                          context_request.get('anchor_run_id'))
             item_id, timestamp = identifier(), now()
             db.execute('INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
                        (item_id, case_id, image_id, kind, question, request_key, fingerprint,
                         'pending', None, None, timestamp, timestamp))
+            db.execute('INSERT INTO run_contexts VALUES (?,?,?)',
+                       (item_id, json.dumps(context_request or {'enabled': False}),
+                        json.dumps(snapshot, ensure_ascii=False) if snapshot else None))
         return self.get('runs', item_id, case_id), True
 
     def update_run(self, item_id, status, result=None, error=None):
@@ -133,6 +150,7 @@ class Store:
             run = self.decode(row)
             if run['status'] != 'succeeded' or not run['result'] or not run['result'].get('answer') or run['result'].get('status') != 'answered':
                 raise ValueError('answered_run_required')
+            self.check_observations(db, case_id, run['result'])
             version = db.execute('SELECT COALESCE(MAX(version),0)+1 FROM reports WHERE case_id=?',
                                  (case_id,)).fetchone()[0]
             item_id = identifier()
@@ -143,8 +161,50 @@ class Store:
 
     def confirm(self, case_id, report_id):
         with self.connection() as db:
+            db.execute('BEGIN IMMEDIATE')
+            report = self.decode(db.execute('SELECT * FROM reports WHERE id=? AND case_id=?', (report_id, case_id)).fetchone())
+            if not report['confirmed_at']:
+                self.check_observations(db, case_id, report['snapshot'])
             cursor = db.execute('UPDATE reports SET confirmed_at=COALESCE(confirmed_at,?) '
                                 'WHERE id=? AND case_id=?', (now(), report_id, case_id))
             if cursor.rowcount != 1:
                 raise KeyError('not_found')
         return self.get('reports', report_id, case_id)
+
+    def get_run_context(self, run_id, case_id):
+        self.get('runs', run_id, case_id)
+        with self.connection() as db:
+            row = db.execute('SELECT request_json,snapshot_json FROM run_contexts WHERE run_id=?', (run_id,)).fetchone()
+        return {'request': json.loads(row['request_json']) if row else {'enabled': False},
+                'snapshot': json.loads(row['snapshot_json']) if row and row['snapshot_json'] else None}
+
+    def add_fact(self, case_id, image_id, text):
+        self.get('cases', case_id)
+        if image_id:
+            self.get('images', image_id, case_id)
+        with self.connection() as db:
+            db.execute('BEGIN IMMEDIATE')
+            row = db.execute('SELECT id FROM case_facts WHERE case_id=? AND image_id IS ? '
+                             'AND text=? AND retracted_at IS NULL', (case_id, image_id, text)).fetchone()
+            fact_id = row['id'] if row else identifier()
+            if not row:
+                db.execute('INSERT INTO case_facts VALUES (?,?,?,?,?,?)',
+                           (fact_id, case_id, image_id, text, now(), None))
+        return self.get('case_facts', fact_id, case_id)
+
+    def retract_fact(self, case_id, fact_id):
+        with self.connection() as db:
+            cursor = db.execute('UPDATE case_facts SET retracted_at=COALESCE(retracted_at,?) '
+                                'WHERE id=? AND case_id=?', (now(), fact_id, case_id))
+            if cursor.rowcount != 1:
+                raise KeyError('not_found')
+        return self.get('case_facts', fact_id, case_id)
+
+    @staticmethod
+    def check_observations(db, case_id, result):
+        for item in result.get('citations', []):
+            if item.get('kind') == 'case_memory' and item.get('memory_type') == 'user_observation':
+                row = db.execute('SELECT retracted_at FROM case_facts WHERE id=? AND case_id=?',
+                                 (item.get('fact_id'), case_id)).fetchone()
+                if row is None or row['retracted_at']:
+                    raise ValueError('report_observation_retracted')

@@ -65,15 +65,16 @@ def main():
         'image_no_calibration_or_test_leakage':not bool(set(reference_paths)&excluded),
         'image_self_match_excluded':all(r['path']!=image_search.rows[0]['path'] for r in self_query['matches']),
         'document_model_revision':search.meta['model_revision'],
+        'document_index_version':search.meta['version'],
         'corpus_files':search.meta['corpus_files'],
         'frozen_evaluation_files':frozen['question_file_sha256'],
         'metrics':by_split,
-        'source_hashes':{name:digest(ROOT/'scripts'/name) for name in ['retrieval_core.py','build_retrieval_indexes.py','evaluate_retrieval.py']},
+        'source_hashes':{name:digest(ROOT/'scripts'/name) for name in ['retrieval_core.py','build_retrieval_indexes.py','evaluate_retrieval.py','refresh_document_index.py']},
         'versions':{name:importlib.metadata.version(name) for name in ['sentence-transformers','transformers','faiss-cpu','torch']},
         'limitations':[
             '題目與相關段落由同一專題建立，屬小型作者自訂評估，尚待使用者與獨立評閱者審查。',
             '沒有量測圖片相似性的人工精確率，圖片測試只驗證索引來源、可執行性與自身排除。',
-            '引用編號有效不代表內容支持主張，生成回答、拒答、工具代理與主張支持評估尚未實作。',
+            '引用編號有效不代表內容支持主張，本次檢索評估不涵蓋生成回答、拒答或工具代理的品質，主張支持仍需另行驗證。',
             '相似度分數不代表答案正確機率，缺少來源的問題也可能回傳不相關候選。',
         ],
     }

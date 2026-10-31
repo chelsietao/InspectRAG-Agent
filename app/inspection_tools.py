@@ -11,7 +11,10 @@ if str(ROOT/'scripts') not in sys.path:
 
 
 class LocalTools:
-    def __init__(self,root:Path,output:Path,image:Path|None=None):
+    def __init__(self,root:Path,output:Path,image:Path|None=None,memory_snapshot=None):
+        from copy import deepcopy
+        from app.case_memory import validate_snapshot
+        self.case_memory=deepcopy(validate_snapshot(memory_snapshot)) if memory_snapshot else None
         self.root=root
         self.output=output
         self.image=image.resolve() if image else None
@@ -42,7 +45,16 @@ class LocalTools:
             return {**self.cache[key],'cached':True}
         if name in ['analyze_image','search_reference_images'] and not self.image:
             return {'status':'needs_context','error':'image_required','message':'請先選取要分析的圖片。'}
-        if name=='search_documents':
+        if name=='read_case_memory':
+            snapshot=getattr(self,'case_memory',None)
+            if not snapshot:
+                return {'status':'needs_context','error':'case_memory_not_enabled'}
+            from app.case_memory import validate_snapshot
+            validate_snapshot(snapshot)
+            for item in snapshot['evidence']:
+                self.evidence[item['id']]=dict(item)
+            payload={'status':'ok','snapshot':snapshot}
+        elif name=='search_documents':
             if self.documents is None:
                 from retrieval_core import DocumentRetriever
                 self.documents=DocumentRetriever(self.root,self.root/'indexes/documents_v1')

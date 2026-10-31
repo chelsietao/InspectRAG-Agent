@@ -31,7 +31,8 @@ class AgentRunner:
                 state.clear()
         messages=[{'role':'system','content':self.prompt},
                   {'role':'user','content':json.dumps({'question':question,
-                    'available_image_id':'selected-image' if image_available else None},ensure_ascii=False)}]
+                    'available_image_id':'selected-image' if image_available else None,
+                    'case_memory_available':bool(getattr(self.tools,'case_memory',None))},ensure_ascii=False)}]
         trace=[]
         api_usage=[]
         tool_count=0
@@ -52,6 +53,11 @@ class AgentRunner:
                     'prompt_version':self.config['prompt_version'],
                     'prompt_sha256':hashlib.sha256(self.prompt.encode()).hexdigest(),
                     'created_at_utc':datetime.now(timezone.utc).isoformat(),
+                    'case_memory':{'read':any(item['tool']=='read_case_memory' and item['status']=='succeeded' for item in trace),
+                        'enabled':bool(getattr(self.tools,'case_memory',None)),
+                        'snapshot_sha256':(getattr(self.tools,'case_memory',None) or {}).get('snapshot_sha256'),
+                        'anchor_run_id':(getattr(self.tools,'case_memory',None) or {}).get('anchor_run_id'),
+                        'scope_image_id':(getattr(self.tools,'case_memory',None) or {}).get('scope_image_id')},
                     'api_calls':api_count,'tool_calls':tool_count,'usage':api_usage,
                     'seconds':time.perf_counter()-started,'tool_trace':trace,
                     'limitations':['引用檢查只驗證本輪來源編號，主張與證據的語意一致性仍需人工審閱。',

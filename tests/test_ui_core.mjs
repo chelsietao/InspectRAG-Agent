@@ -54,3 +54,28 @@ test('document-only runs never populate image panels without a selected image', 
   assert.equal(latestForImage([run],null,'analysis'), undefined);
   assert.equal(latestReferences([run],null), undefined);
 });
+
+
+import {memoryAnchor} from '../web/ui-core.mjs';
+
+test('memory anchor follows selected image and excludes pending runs', () => {
+  const runs = [{id:'a',image_id:'one',status:'succeeded'}, {id:'b',image_id:'two',status:'succeeded'}, {id:'c',image_id:'one',status:'running'}];
+  assert.equal(memoryAnchor(runs,'one'), 'a');
+});
+test('explicit memory anchor cannot select another image or missing run', () => {
+  const runs = [{id:'a',image_id:'one',status:'succeeded'}, {id:'b',image_id:'two',status:'succeeded'}];
+  assert.equal(memoryAnchor(runs,'one','a'), 'a');
+  assert.equal(memoryAnchor(runs,'one','b'), null);
+  assert.equal(memoryAnchor(runs,'one','missing'), null);
+});
+test('no selected image keeps automatic memory anchor unresolved', () => {
+  assert.equal(memoryAnchor([{id:'a',image_id:'one',status:'succeeded'}],null), null);
+});
+
+import {hasRetractedObservation} from '../web/ui-core.mjs';
+test('retracted observations flag historical answers without affecting unrelated citations', () => {
+  const result = {citations:[{kind:'case_memory',memory_type:'user_observation',fact_id:'one'}]};
+  assert.equal(hasRetractedObservation(result,[{id:'one',retracted_at:null}]),false);
+  assert.equal(hasRetractedObservation(result,[{id:'one',retracted_at:'2026-10-31'}]),true);
+  assert.equal(hasRetractedObservation({citations:[{kind:'document'}]},[{id:'one',retracted_at:'x'}]),false);
+});

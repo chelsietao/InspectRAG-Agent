@@ -41,7 +41,7 @@ CHUNKS = [
     ("data-counts", "project-data", "已驗證圖片數量", "第一階段驗證了 292 張檢驗圖片與 63 張瑕疵遮罩（Ground-truth Masks），共 355 個 PNG 檔，圖片尺寸皆為 900 × 900，圖片為 RGB、遮罩為單通道。"),
     ("data-integrity", "project-data", "檔案檢查與標註限制", "資料驗證檢查解碼、遮罩二元值、圖片與遮罩的對應及尺寸，未發現訓練與測試之間像素完全相同的圖片，近似重複與標註語意正確性仍需要額外檢查。"),
     ("use-no-root-cause", "project-scope", "根因與允收範圍", "專題目前可提供外觀分數、參考圖與方法說明，製程根因（Root Cause）、修復處置與產品允收標準（Acceptance Criteria）缺少專業資料支持，這類問題需要回覆證據不足。"),
-    ("use-memory", "project-scope", "案件記憶規劃", "案件記憶（Agent Memory）規劃保存分析版本、已確認資訊、摘要與證據編號，推論與使用者確認事實分開標記，目前案件資料庫與代理記憶尚未實作。"),
+    ("use-memory", "project-scope", "案件記憶與證據快照", "案件記憶（Case Memory）已保存同案件的歷史工具結果、來源執行與使用者確認觀察，追問時以最多 6,000 字元的快照提供資料，使用者觀察與量測結果分開標記，舊模型回答不作為新事實，撤回觀察只影響之後建立的快照。"),
     ("use-local-files", "project-guide", "模型與分析產物位置", "模型檢查點（Checkpoint）保存在 artifacts/vision_baseline_v1/patchcore_bottle.pt，熱圖與單張推論結果保留本機，原始圖片、權重與執行環境不放進公開 GitHub。"),
     ("use-cli-predict", "project-guide", "單張推論操作", "在專案根目錄執行 .venv/bin/python scripts/predict_image.py 圖片路徑，會載入已保存的模型並產生分數與熱圖，輸出位置用 --output 指定，既有資料夾不會覆寫。"),
     ("use-cli-baseline", "project-guide", "重新執行基準", "執行 scripts/run_vision_baseline.py 可以重建基準，若輸出資料夾已存在會停止，重跑需用 --output 與 --report-dir 指定新位置，保留先前實驗紀錄。"),
@@ -75,7 +75,7 @@ def main():
     for chunk_id, source_id, title, text in CHUNKS:
         row = {"chunk_id": chunk_id, "source_id": source_id, "title": title, "text": text,
                "source_url": by_id[source_id]["url"], "source_locator": by_id[source_id]["locator"],
-               "content_type": "authored_summary", "corpus_version": "knowledge-v1",
+               "content_type": "authored_summary", "corpus_version": "knowledge-v2-case-memory",
                "text_sha256": hashlib.sha256(text.encode()).hexdigest()}
         chunks.append(row)
     assert len({r["chunk_id"] for r in chunks}) == len(chunks)

@@ -1,0 +1,12 @@
+{
+  "scope": "isolated_database_and_scripted_offline_provider",
+  "external_llm_calls": 0,
+  "confirmation_required_before_observation_save": true,
+  "image_scoped_observation_saved": true,
+  "observation_cited_after_read_case_memory": true,
+  "retraction_removed_observation_from_new_snapshot": true,
+  "new_followup_returned_needs_context_after_retraction": true,
+  "old_answer_retained_with_retraction_warning": true,
+  "draft_button_disabled_for_retracted_observation": true,
+  "qa_cases_added_to_production_database": false
+}

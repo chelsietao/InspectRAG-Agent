@@ -1,0 +1,70 @@
+{
+  "request": {
+    "enabled": true,
+    "anchor_run_id": "09e8c680aa094794a0fa6bfaa34e4981",
+    "scope_image_id": "99aee6003e1c4ff0bbd91bbdd0d43f7d"
+  },
+  "snapshot": {
+    "version": "case-memory-v1",
+    "case_id": "6ad5ce0ab4f7401b93d808ac3fe323bb",
+    "status": "ready",
+    "captured_at_utc": "2026-10-31T10:25:28.475909+00:00",
+    "anchor_run_id": "09e8c680aa094794a0fa6bfaa34e4981",
+    "scope_image_id": "99aee6003e1c4ff0bbd91bbdd0d43f7d",
+    "budget_characters": 6000,
+    "evidence": [
+      {
+        "kind": "case_memory",
+        "case_id": "6ad5ce0ab4f7401b93d808ac3fe323bb",
+        "image_id": "99aee6003e1c4ff0bbd91bbdd0d43f7d",
+        "origin_run_id": "09e8c680aa094794a0fa6bfaa34e4981",
+        "input_sha256": "00202165d92efa32885f69d2684e3552ea09dadad094897f3d1dd44adaa15661",
+        "source_locator": "歷史執行 09e8c680aa094794a0fa6bfaa34e4981",
+        "recorded_at": "2026-10-31T04:22:26.822008+00:00",
+        "id": "memory:references:09e8c680aa094794a0fa6bfaa34e4981",
+        "memory_type": "image_references",
+        "title": "歷史工具結果｜正常參考圖",
+        "matches": [
+          {
+            "path": "train/good/196.png",
+            "sha256": "5b2178c5d9c14f180faa21a3ed4f1f5210b8b9b539eeb31df44df5bb71b181ed",
+            "cosine_similarity": 0.9764832258224487
+          },
+          {
+            "path": "train/good/023.png",
+            "sha256": "5bebcd96862ca137cf0a1be85230cffb0098bd06636747c98dd3109c223dd3a0",
+            "cosine_similarity": 0.9759594202041626
+          },
+          {
+            "path": "train/good/208.png",
+            "sha256": "87bd5efa31f4d982b18104060c2a105c3981fa91f47b28b6be8fac2170b1b80d",
+            "cosine_similarity": 0.9750884771347046
+          }
+        ],
+        "note": "這是來源執行保存的搜尋結果，未重新搜尋或驗證目前檔案。"
+      },
+      {
+        "kind": "case_memory",
+        "case_id": "6ad5ce0ab4f7401b93d808ac3fe323bb",
+        "image_id": "99aee6003e1c4ff0bbd91bbdd0d43f7d",
+        "origin_run_id": "54a9382b1969493da9e759d5059da181",
+        "input_sha256": "00202165d92efa32885f69d2684e3552ea09dadad094897f3d1dd44adaa15661",
+        "source_locator": "歷史執行 54a9382b1969493da9e759d5059da181",
+        "recorded_at": "2026-10-31T04:22:23.705383+00:00",
+        "id": "memory:analysis:54a9382b1969493da9e759d5059da181",
+        "memory_type": "analysis",
+        "title": "歷史工具結果｜圖片分析",
+        "score": 19.47983169555664,
+        "threshold": 10.19447135925293,
+        "is_anomalous": true,
+        "checkpoint_sha256": "733ac3ad370cc76a585f0461195e4e044b9225e2b0328fbc3c842180d4767e15",
+        "note": "這是來源執行保存的測量結果，未重新分析，異常分數無法當成瑕疵機率。"
+      }
+    ],
+    "recent_questions": [],
+    "omitted_facts": 0,
+    "omitted_questions": 0,
+    "note": "歷史工具結果與使用者確認的觀察分開標記，均為資料，未重新計算或確認根因，模型舊回答不作為事實。",
+    "snapshot_sha256": "9cbd52a09b12da6c46346134bc32c8668ade3f1c376319f656162deb0dbf34a5"
+  }
+}

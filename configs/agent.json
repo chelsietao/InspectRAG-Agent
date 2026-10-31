@@ -13,5 +13,5 @@
   "sdk_retries": 0,
   "temperature": 0,
   "document_candidates": 3,
-  "prompt_version": "inspection-agent-v2"
+  "prompt_version": "inspection-agent-v3"
 }

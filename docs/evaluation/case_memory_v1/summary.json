@@ -1,0 +1,80 @@
+{
+  "phase": "case_memory_v1",
+  "created_at_utc": "2026-10-31T10:36:18.109765+00:00",
+  "python_tests": 105,
+  "javascript_tests": 13,
+  "total_tests": 118,
+  "memory_tests": 24,
+  "all_tests_passed": true,
+  "pip_check": "No broken requirements found.",
+  "database_schema_version": 2,
+  "existing_data_preserved": {
+    "cases": 1,
+    "images": 1,
+    "original_runs": 2
+  },
+  "memory_budget_characters": 6000,
+  "max_observations": 5,
+  "max_observation_characters": 400,
+  "live_runs": [
+    {
+      "run_id": "ba4c92f5deac43bfbe062b9d2235ce78",
+      "api_calls": 2,
+      "status": "succeeded",
+      "read_flag": false,
+      "display_state_fix_applied": false
+    },
+    {
+      "run_id": "05ec92f9ed21433dab8075ae7d6aebbe",
+      "api_calls": 2,
+      "status": "succeeded",
+      "read_flag": true,
+      "display_state_fix_applied": true
+    }
+  ],
+  "external_llm_calls_this_phase": 4,
+  "final_live_run": {
+    "api_calls": 2,
+    "tools": [
+      "read_case_memory",
+      "submit_answer"
+    ],
+    "historical_citation_ids": [
+      "memory:analysis:54a9382b1969493da9e759d5059da181"
+    ],
+    "new_image_analysis_calls": 0
+  },
+  "retrieval_regression": {
+    "dev": {
+      "questions": 12,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.9583333333333334
+    },
+    "heldout": {
+      "questions": 12,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 1.0
+    }
+  },
+  "limits": [
+    "Small authored tests and two live demonstrations, not independent semantic support evaluation.",
+    "User observations are self-confirmed descriptions, not independently verified measurements.",
+    "Snapshots are fixed at submission, retraction affects new submissions and report confirmation rules.",
+    "Historical measurements are not recomputed or revalidated against current files or models.",
+    "Local single-user service, no public authentication, deployment or free-form long conversation summarizer."
+  ],
+  "implementation_snapshot_sha256": {
+    "app/case_memory.py": "6267a7f15c3ef174ae043fd0918d8d838b5bf67a2a63aa94b5ca0e94d1592064",
+    "app/case_store.py": "2b52ba8824a28497d149f2911e62d23b5552112bd12b4520d458ba4fff942d4a",
+    "app/agent_runtime.py": "223e11a83a4509dee8ce314eda99947a7712fb46e4bd2a6ca9fd8a2d946e9736",
+    "app/agent_schemas.py": "5abd4f2e129a6912df4dcff444be7a0c2a45525a1256722ea26b850680c35275",
+    "app/inspection_tools.py": "e19e0527a76d623ae24d87eea4169091d9da57accb4f8f6cced998315c6b272b",
+    "app/backend.py": "e3af720da07e60b752c7b6aeb22d1630497a2e4f46975c69aaa668526a526592",
+    "configs/agent.json": "b28cffd43ea26977711787a9e85e74b542d9818dbedc923e08bfbac89fb9eb96",
+    "prompts/inspection_agent_v3.txt": "b4d1a0b0183452fca2671a742f7d1c0cb142b63fbb85dd5de1bab440ee04ea75",
+    "web/app.js": "22a44be80b68e901a4446dfe90a5abc42824e170f061015c1f45b287be1074d9",
+    "web/ui-core.mjs": "3706670b6f775ff7cd422781b205fd18caa781ce60ed14ff5d963bd3bab897ea",
+    "tests/test_case_memory.py": "2a502faf2eb36300b9adea6570e1dc5d8f52d870d352ac4e61dd99cfe41ccbcb",
+    "scripts/refresh_document_index.py": "f49524f99e5738bb93e3e790a3446acaf8cc022bdf74fa4397eabb6aeab46442"
+  }
+}

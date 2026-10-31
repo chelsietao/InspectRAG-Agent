@@ -42,7 +42,23 @@ class NewRun(Payload):
     kind: str = Field(pattern='^(analysis|references|agent)$')
     question: str = Field(default='', max_length=2000)
     image_id: str | None = Field(default=None, pattern='^[a-f0-9]{32}$')
+    memory_image_id: str | None = Field(default=None, pattern='^[a-f0-9]{32}$')
+    use_case_memory: bool = False
+    context_run_id: str | None = Field(default=None, pattern='^[a-f0-9]{32}$')
     request_key: str = Field(min_length=1, max_length=80, pattern='^[A-Za-z0-9_-]+$')
+
+
+class NewFact(Payload):
+    text: str = Field(min_length=1, max_length=400)
+    image_id: str | None = Field(default=None, pattern='^[a-f0-9]{32}$')
+    accepted: bool
+
+    @field_validator('text')
+    @classmethod
+    def clean(cls, value):
+        if not value.strip():
+            raise ValueError('blank_observation')
+        return value.strip()
 
 
 class NewReport(Payload):
@@ -60,7 +76,7 @@ def execute_run(root, directory, run, image):
     from app.groq_provider import GroqProvider, load_config
     tools = provider = None
     try:
-        tools = LocalTools(root, directory, image)
+        tools = LocalTools(root, directory, image, memory_snapshot=run.get('case_memory'))
         if run['kind'] == 'references':
             result = tools.execute('search_reference_images', {'k': 3})
             return {**result, 'evidence': tools.evidence}
@@ -92,7 +108,9 @@ def create_app(data_dir=None, executor_fn=execute_run):
         try:
             store.update_run(run['id'], 'running')
             image = data / 'images' / (run['image_id'] + '.png') if run['image_id'] else None
-            result = executor_fn(ROOT, data / 'runs' / run['id'], run, image)
+            context = store.get_run_context(run['id'], run['case_id'])
+            execution = {**run, 'case_memory': context['snapshot']}
+            result = executor_fn(ROOT, data / 'runs' / run['id'], execution, image)
             if result.get('status') in ('answered', 'insufficient_evidence', 'needs_context', 'ok'):
                 store.update_run(run['id'], 'succeeded', result)
             else:
@@ -121,7 +139,7 @@ def create_app(data_dir=None, executor_fn=execute_run):
         finally:
             lock.close()
 
-    api = FastAPI(title='InspectRAG local API', version='0.6.0', lifespan=lifespan)
+    api = FastAPI(title='InspectRAG local API', version='0.7.0', lifespan=lifespan)
     api.state.store = store
     api.state.data_dir = data
 
@@ -165,7 +183,7 @@ def create_app(data_dir=None, executor_fn=execute_run):
     def health():
         with store.connection() as db:
             db.execute('SELECT 1').fetchone()
-        return {'status': 'ok', 'database_schema': 1, 'scope': 'local_single_user',
+        return {'status': 'ok', 'database_schema': 2, 'scope': 'local_single_user',
                 'llm_online_checked': False, 'recovered_jobs': getattr(api.state, 'recovered_jobs', 0)}
 
     @api.post('/cases', status_code=201)
@@ -234,8 +252,20 @@ def create_app(data_dir=None, executor_fn=execute_run):
             raise HTTPException(422, body.kind + '_requires_image')
         if body.kind == 'agent' and not body.question.strip():
             raise HTTPException(422, 'agent_requires_question')
-        fingerprint = hashlib.sha256(json.dumps(body.model_dump(exclude={'request_key'}),
-                                                sort_keys=True).encode()).hexdigest()
+        if (body.use_case_memory or body.context_run_id or body.memory_image_id) and body.kind != 'agent':
+            raise HTTPException(422, 'memory_requires_agent')
+        if (body.context_run_id or body.memory_image_id) and not body.use_case_memory:
+            raise HTTPException(422, 'memory_not_enabled')
+        if body.image_id and body.memory_image_id and body.image_id != body.memory_image_id:
+            raise HTTPException(409, 'memory_image_mismatch')
+        context_request = {'enabled': body.use_case_memory, 'anchor_run_id': body.context_run_id,
+                           'scope_image_id': body.memory_image_id}
+        fingerprint_body = body.model_dump(exclude={'request_key'})
+        if not body.use_case_memory and not body.context_run_id:
+            fingerprint_body.pop('use_case_memory')
+            fingerprint_body.pop('context_run_id')
+            fingerprint_body.pop('memory_image_id')
+        fingerprint = hashlib.sha256(json.dumps(fingerprint_body, sort_keys=True).encode()).hexdigest()
         # Reserve capacity before writing a pending job, prevent abandoned pending rows.
         if not slots.acquire(blocking=False):
             # Existing identical requests remain readable even when capacity is full.
@@ -243,17 +273,17 @@ def create_app(data_dir=None, executor_fn=execute_run):
                 if existing['request_key'] == body.request_key:
                     try:
                         run, _ = store.submit(case_id, body.image_id, body.kind, body.question,
-                                              body.request_key, fingerprint)
-                    except ValueError:
-                        raise HTTPException(409, 'idempotency_conflict') from None
+                                              body.request_key, fingerprint, context_request)
+                    except ValueError as exc:
+                        raise HTTPException(409, str(exc)) from None
                     return run
             raise HTTPException(429, 'local_queue_full')
         try:
             run, created = store.submit(case_id, body.image_id, body.kind, body.question,
-                                        body.request_key, fingerprint)
-        except ValueError:
+                                        body.request_key, fingerprint, context_request)
+        except ValueError as exc:
             slots.release()
-            raise HTTPException(409, 'idempotency_conflict') from None
+            raise HTTPException(409, str(exc)) from None
         except Exception:
             slots.release()
             raise
@@ -272,11 +302,41 @@ def create_app(data_dir=None, executor_fn=execute_run):
     def runs(case_id: str):
         store.get('cases', case_id)
         return {'items': store.list('runs', case_id),
-                'memory_policy': 'saved_history_only_not_injected_into_agent_context'}
+                'memory_policy': 'explicit_opt_in_case_snapshot_v1'}
 
     @api.get('/cases/{case_id}/runs/{run_id}')
     def run(case_id: str, run_id: str):
         return store.get('runs', run_id, case_id)
+
+    @api.get('/cases/{case_id}/facts')
+    def facts(case_id: str):
+        store.get('cases', case_id)
+        return {'items': store.list('case_facts', case_id)}
+
+    @api.post('/cases/{case_id}/facts', status_code=201)
+    def add_fact(case_id: str, body: NewFact):
+        if not body.accepted:
+            raise HTTPException(422, 'explicit_observation_confirmation_required')
+        return store.add_fact(case_id, body.image_id, body.text)
+
+    @api.post('/cases/{case_id}/facts/{fact_id}/retract')
+    def retract(case_id: str, fact_id: str, body: Confirmation):
+        if not body.accepted:
+            raise HTTPException(422, 'explicit_acceptance_required')
+        return store.retract_fact(case_id, fact_id)
+
+    @api.get('/cases/{case_id}/memory-preview')
+    def memory_preview(case_id: str, image_id: str | None = None, context_run_id: str | None = None):
+        from app.case_memory import build_snapshot
+        try:
+            with store.connection() as db:
+                return build_snapshot(db, case_id, image_id, context_run_id)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from None
+
+    @api.get('/cases/{case_id}/runs/{run_id}/memory')
+    def run_memory(case_id: str, run_id: str):
+        return store.get_run_context(run_id, case_id)
 
     @api.get('/cases/{case_id}/runs/{run_id}/heatmap')
     def heatmap(case_id: str, run_id: str):
@@ -313,8 +373,8 @@ def create_app(data_dir=None, executor_fn=execute_run):
         store.get('cases', case_id)
         try:
             return store.draft(case_id, body.run_id)
-        except ValueError:
-            raise HTTPException(409, 'answered_run_required') from None
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from None
 
     @api.get('/cases/{case_id}/reports')
     def reports(case_id: str):
@@ -329,6 +389,9 @@ def create_app(data_dir=None, executor_fn=execute_run):
     def confirm(case_id: str, report_id: str, body: Confirmation):
         if not body.accepted:
             raise HTTPException(422, 'explicit_acceptance_required')
-        return store.confirm(case_id, report_id)
+        try:
+            return store.confirm(case_id, report_id)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from None
 
     return api

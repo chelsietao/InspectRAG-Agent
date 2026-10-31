@@ -1,0 +1,59 @@
+{
+  "stage": "retrieval-only, no LLM generation or Agent",
+  "document_sources": 11,
+  "document_chunks": 32,
+  "image_reference_count": 179,
+  "image_feature_dimension": 6144,
+  "image_reference_roles": [
+    "normal training only"
+  ],
+  "image_no_calibration_or_test_leakage": true,
+  "image_self_match_excluded": true,
+  "document_model_revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+  "document_index_version": "documents-v2-case-memory",
+  "corpus_files": {
+    "data/knowledge/chunks.jsonl": "51a47150213b8435a94f88ce9a70e1338c4741f526fb57ed217d439a55574700",
+    "data/knowledge/sources.jsonl": "9a53dbea4b4953f564e39850e207f90a9dd8f862030a7f55bf30b6255ad89e42",
+    "data/knowledge/dependencies.json": "347ff5d9d5a274af829f05cc86efc6e1d79691f2b35b355be1804194e9dab2ab"
+  },
+  "frozen_evaluation_files": {
+    "dev.jsonl": "5c7d345978f905adced678c95cb71b43c218b2ed995539362f72e6cd1324d3da",
+    "heldout.jsonl": "e02b3f03ad1e635543bf9a50971d0d5b9a279b7ce6733dee5490b9fed85cac7b"
+  },
+  "metrics": {
+    "dev": {
+      "questions": 12,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.9583333333333334,
+      "citation_id_validity": 1.0,
+      "latency_p50_seconds": 0.007108542020432651,
+      "latency_p95_seconds": 0.011284500165493223
+    },
+    "heldout": {
+      "questions": 12,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 1.0,
+      "citation_id_validity": 1.0,
+      "latency_p50_seconds": 0.007055021007545292,
+      "latency_p95_seconds": 0.007525273255305364
+    }
+  },
+  "source_hashes": {
+    "retrieval_core.py": "c510f57339965d5b435b4b74f07ccfcf60246fa2f7977d217a566bc9e15d2a99",
+    "build_retrieval_indexes.py": "6bb1ecdc0eee94269cd09c4060ae43ed21206ae9c340603c56272774539a6b17",
+    "evaluate_retrieval.py": "0bb4d609ad8b6546d92e035df090f2efd4fc27722f20528b17e655e51a91762d",
+    "refresh_document_index.py": "f49524f99e5738bb93e3e790a3446acaf8cc022bdf74fa4397eabb6aeab46442"
+  },
+  "versions": {
+    "sentence-transformers": "6.2.0",
+    "transformers": "5.22.1",
+    "faiss-cpu": "1.15.1",
+    "torch": "2.15.0"
+  },
+  "limitations": [
+    "題目與相關段落由同一專題建立，屬小型作者自訂評估，尚待使用者與獨立評閱者審查。",
+    "沒有量測圖片相似性的人工精確率，圖片測試只驗證索引來源、可執行性與自身排除。",
+    "引用編號有效不代表內容支持主張，本次檢索評估不涵蓋生成回答、拒答或工具代理的品質，主張支持仍需另行驗證。",
+    "相似度分數不代表答案正確機率，缺少來源的問題也可能回傳不相關候選。"
+  ]
+}

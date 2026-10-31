@@ -32,6 +32,10 @@ export function canDraft(run) {
 export const statuses = {pending: '等待執行', running: '執行中', succeeded: '已完成', failed: '執行失敗'};
 export const kinds = {analysis: '圖片分析', references: '正常參考圖搜尋', agent: '來源問答'};
 export const errorLabels = {
+  report_observation_retracted: '回答引用的觀察已撤回，請完成新的問答後再建立或確認報告。',
+  memory_image_mismatch: '追問來源屬於另一張圖片，請重新選擇來源或圖片。',
+  memory_anchor_not_completed: '來源執行尚未完成，請等結果完成後再追問。',
+  memory_not_enabled: '追問來源需要案件記憶，請勾選帶入記憶後再送出。',
   rate_limited: 'Groq 免費額度不足，請等額度恢復後再提出新工作。',
   credential_not_configured: 'Groq 金鑰尚未設定，請檢查本機設定。',
   authentication_failed: 'Groq 金鑰驗證失敗，請檢查本機設定。',
@@ -50,4 +54,15 @@ export const errorLabels = {
 export function errorText(code) { return errorLabels[code] || '操作未完成，請重新整理後查看案件紀錄。'; }
 export function samePending(runs, kind, imageId) {
   return runs.some(run => run.kind === kind && run.image_id === imageId && ['pending', 'running'].includes(run.status));
+}
+
+export function memoryAnchor(runs, imageId, explicitId = '') {
+  const eligible = runs.filter(run => run.status === 'succeeded' && (!imageId || run.image_id === imageId));
+  if (explicitId) return eligible.find(run => run.id === explicitId)?.id || null;
+  return imageId ? eligible.at(-1)?.id || null : null;
+}
+
+export function hasRetractedObservation(result, facts) {
+  return (result?.citations || []).some(item => item.kind === 'case_memory' && item.memory_type === 'user_observation' &&
+    facts.some(fact => fact.id === item.fact_id && fact.retracted_at));
 }

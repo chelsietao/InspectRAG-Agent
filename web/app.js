@@ -1,9 +1,10 @@
 import {safeSourceUrl, latestForImage, analysisOf, referencesOf, latestReferences, canDraft,
-  statuses, kinds, errorText, samePending} from './ui-core.mjs';
+  statuses, kinds, errorText, samePending, memoryAnchor, hasRetractedObservation} from './ui-core.mjs';
 
 const $ = id => document.getElementById(id);
 const state = {cases: [], caseId: null, imageId: null, images: [], runs: [], reports: [],
-  answerId: null, timer: null, sequence: 0, busy: false, reportSignature: null};
+  answerId: null, timer: null, sequence: 0, busy: false, reportSignature: null,
+  facts: [], factSignature: null, memorySourceId: '', previewSequence: 0};
 const retryKeys = new Map();
 const el = (tag, className, text) => {
   const node = document.createElement(tag);
@@ -57,7 +58,10 @@ function updateButtons() {
   $('ask').disabled = state.busy || !state.caseId;
   $('load-sample').disabled = state.busy || !state.caseId;
   $('upload-input').disabled = state.busy || !state.caseId;
-  $('draft-report').disabled = state.busy || !canDraft(state.runs.find(run => run.id === state.answerId));
+  const selectedAnswer = state.runs.find(run => run.id === state.answerId);
+  $('draft-report').disabled = state.busy || !canDraft(selectedAnswer) || hasRetractedObservation(selectedAnswer?.result, state.facts);
+  $('save-fact').disabled = state.busy || !state.caseId || !$('fact-confirm').checked || ($('fact-image-scope').checked && !selected);
+  $('memory-source').disabled = !$('use-memory').checked;
   $('new-case-form').querySelector('button').disabled = state.busy;
   for (const button of $('case-list').querySelectorAll('button')) button.disabled = state.busy;
 }
@@ -92,6 +96,10 @@ async function selectCase(id) {
   if (id === state.caseId) { renderCases(); await refreshCase(); return; }
   $('question').value = '';
   $('include-image').checked = true;
+  $('use-memory').checked = true;
+  $('fact-text').value = ''; $('fact-confirm').checked = false;
+  $('fact-image-scope').checked = true;
+  state.memorySourceId = ''; state.facts = []; state.factSignature = null; state.previewSequence++;
   clearTimeout(state.timer);
   state.sequence++;
   state.caseId = id;
@@ -119,15 +127,17 @@ async function refreshCase() {
   const caseId = state.caseId;
   const sequence = ++state.sequence;
   try {
-    const [images, runs, reports] = await Promise.all([
-      api(`${base(caseId)}/images`), api(`${base(caseId)}/runs`), api(`${base(caseId)}/reports`)]);
+    const [images, runs, reports, facts] = await Promise.all([
+      api(`${base(caseId)}/images`), api(`${base(caseId)}/runs`), api(`${base(caseId)}/reports`), api(`${base(caseId)}/facts`)]);
     if (caseId !== state.caseId || sequence !== state.sequence) return;
     state.images = images.items;
     state.runs = runs.items;
     state.reports = reports.items;
+    state.facts = facts.items;
     if (!state.images.some(image => image.id === state.imageId)) state.imageId = state.images.at(-1)?.id || null;
     if (!state.runs.some(run => run.id === state.answerId)) state.answerId = [...state.runs].reverse().find(run => run.kind === 'agent')?.id || null;
     render();
+    await refreshMemoryPreview();
   } catch (error) { if (caseId === state.caseId && sequence === state.sequence) showError(error); }
   finally { if (caseId === state.caseId && sequence === state.sequence) schedulePoll(); }
 }
@@ -154,7 +164,7 @@ function renderImages() {
     button.setAttribute('aria-pressed', String(image.id === state.imageId));
     const thumbnail = el('img'); thumbnail.src = imageUrl(image); thumbnail.alt = '';
     button.append(thumbnail);
-    button.addEventListener('click', () => { state.imageId = image.id; renderImages(); renderReferences(); updateButtons(); });
+    button.addEventListener('click', () => { state.imageId = image.id; state.memorySourceId = ''; renderImages(); renderReferences(); renderMemory(); refreshMemoryPreview(); updateButtons(); });
     $('image-strip').append(button);
   }
   const image = state.images.find(item => item.id === state.imageId);
@@ -193,6 +203,13 @@ function renderCitations(target, citations) {
       const link = el('a', '', `${citation.title || citation.id} ↗`);
       link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer'; node.append(link);
     } else node.append(el('span', '', citation.title || citation.id));
+    if (citation.kind === 'case_memory') {
+      const details = el('details'); details.append(el('summary', '', citation.memory_type === 'user_observation' ? '使用者觀察，未經獨立驗證' : '歷史工具結果，未重新計算'));
+      if (citation.text) details.append(el('p', '', citation.text));
+      if (Number.isFinite(citation.score)) details.append(el('p', '', `分數 ${citation.score}，門檻 ${citation.threshold}`));
+      if (citation.checkpoint_sha256) details.append(el('small', '', `模型雜湊 ${citation.checkpoint_sha256}`));
+      node.append(details);
+    }
     node.append(el('small', '', `${citation.id}${citation.source_locator ? ' · ' + citation.source_locator : ''}`));
     target.append(node);
   }
@@ -201,6 +218,10 @@ function showAnswer(target, result, question) {
   target.replaceChildren();
   if (question) target.append(el('p', 'question-label', question));
   if (!result?.answer) { target.append(el('p', 'empty-text', '回答尚未產生，請查看執行紀錄與狀態。')); return; }
+  if (result.case_memory?.enabled) target.append(el('p', 'memory-result-note', result.case_memory.read
+    ? `本輪已讀取案件記憶，快照 ${short(result.case_memory.snapshot_sha256)}，來源執行 ${short(result.case_memory.anchor_run_id) || '尚無圖片分析'}。`
+    : '本輪提供案件記憶，引用情況請查看工具流程。'));
+  if (hasRetractedObservation(result, state.facts)) target.append(el('p', 'memory-result-note', '這份歷史回答引用的觀察已撤回，請完成新的問答後再建立或確認報告。'));
   const answer = result.answer;
   if (answer.status !== 'answered') target.append(el('p', 'answer-status', answer.status === 'needs_context' ? '需要補充資訊，再依來源確認。' : '現有證據不足，請檢查限制說明。'));
   (answer.claims || []).forEach((claim, index) => {
@@ -226,7 +247,7 @@ function renderAnswer() {
   const runs = [...state.runs].reverse().filter(run => run.kind === 'agent');
   const select = $('answer-select'); select.replaceChildren();
   if (!runs.length) select.append(new Option('尚無問答', ''));
-  for (const run of runs) select.append(new Option(`${dateText(run.created_at)} · ${statuses[run.status]}`, run.id));
+  for (const run of runs) select.append(new Option(`${dateText(run.created_at)} · ${short(run.id)} · ${statuses[run.status]}`, run.id));
   select.value = state.answerId || '';
   const run = runs.find(item => item.id === state.answerId);
   if (!run) {
@@ -251,7 +272,7 @@ function renderRuns() {
   }
 }
 function renderReports() {
-  const signature = JSON.stringify(state.reports);
+  const signature = JSON.stringify([state.reports, state.facts.map(fact => [fact.id, fact.retracted_at])]);
   if (signature === state.reportSignature) return;
   state.reportSignature = signature;
   $('report-count').textContent = `${state.reports.length} 個版本`;
@@ -272,7 +293,7 @@ function renderReports() {
       label.append(checkbox, document.createTextNode('我已核對內容與引用來源'));
       const confirm = el('button', 'button primary', '確認這個版本');
       confirm.type = 'button'; confirm.disabled = true;
-      checkbox.addEventListener('change', () => { confirm.disabled = !checkbox.checked; });
+      checkbox.addEventListener('change', () => { confirm.disabled = !checkbox.checked || hasRetractedObservation(report.snapshot, state.facts); });
       confirm.addEventListener('click', () => action(async () => {
         if (!checkbox.checked) return;
         confirm.disabled = true;
@@ -292,7 +313,7 @@ function renderReports() {
     actions.append(download); details.append(actions); $('report-list').append(details);
   }
 }
-function render() { renderImages(); renderReferences(); renderAnswer(); renderRuns(); renderReports(); updateButtons(); }
+function render() { renderImages(); renderReferences(); renderAnswer(); renderRuns(); renderReports(); renderMemory(); updateButtons(); }
 async function upload(file) {
   if (!file || !state.caseId) return;
   if (file.size > 10 * 1024 * 1024) throw new Error('image_too_large');
@@ -307,6 +328,11 @@ async function submitRun(kind, question = '') {
   const caseId = state.caseId;
   const imageId = kind === 'agent' && !$('include-image').checked ? null : state.imageId;
   const body = {kind, question, image_id: imageId};
+  if (kind === 'agent') {
+    body.use_case_memory = $('use-memory').checked;
+    body.memory_image_id = body.use_case_memory ? state.imageId : null;
+    body.context_run_id = body.use_case_memory ? memoryAnchor(state.runs, state.imageId, state.memorySourceId) : null;
+  }
   const signature = JSON.stringify([caseId, body]);
   const requestKey = retryKeys.get(signature) || crypto.randomUUID().replaceAll('-', '');
   retryKeys.set(signature, requestKey);
@@ -316,6 +342,63 @@ async function submitRun(kind, question = '') {
   if (kind === 'agent') state.answerId = run.id;
   await refreshCase(); notice('工作已送出，執行狀態會在紀錄中更新。', true);
 }
+function renderMemory() {
+  const select = $('memory-source'); select.replaceChildren();
+  select.append(new Option('目前圖片最近完成的執行', ''));
+  const eligible = state.runs.filter(run => run.status === 'succeeded' && (!state.imageId || run.image_id === state.imageId));
+  for (const run of [...eligible].reverse()) select.append(new Option(`${kinds[run.kind]} · ${short(run.id)} · ${dateText(run.created_at)}`, run.id));
+  if (!eligible.some(run => run.id === state.memorySourceId)) state.memorySourceId = '';
+  select.value = state.memorySourceId;
+  const active = state.facts.filter(fact => !fact.retracted_at);
+  $('fact-count').textContent = `${active.length} 筆有效觀察`;
+  const signature = JSON.stringify([state.imageId, state.facts]);
+  if (signature === state.factSignature) return;
+  state.factSignature = signature;
+  $('fact-list').replaceChildren();
+  if (!state.facts.length) $('fact-list').append(el('p', 'empty-text', '尚無觀察，模型推測不會加入這份紀錄。'));
+  for (const fact of [...state.facts].reverse()) {
+    const row = el('div', `fact ${fact.retracted_at ? 'retracted' : ''}`);
+    row.append(el('p', '', fact.text), el('small', '', `${fact.image_id ? '圖片 ' + short(fact.image_id) : '案件共用'} · ${dateText(fact.confirmed_at)} · ${fact.retracted_at ? '已撤回' : '使用者確認'}`));
+    if (!fact.retracted_at) {
+      const button = el('button', 'button subtle', '撤回觀察'); button.type = 'button';
+      button.addEventListener('click', () => action(async () => {
+        await post(`${base(fact.case_id)}/facts/${fact.id}/retract`, {accepted: true});
+        if (state.caseId === fact.case_id) { await refreshCase(); notice('觀察已撤回，新建立的記憶快照會排除這筆資料。', true); }
+      })); row.append(button);
+    }
+    $('fact-list').append(row);
+  }
+}
+async function refreshMemoryPreview() {
+  const sequence = ++state.previewSequence;
+  const caseId = state.caseId;
+  if (!$('use-memory').checked || !caseId) { $('memory-preview').textContent = '本輪不帶入案件記憶，仍可查詢文件或分析勾選的圖片。'; return; }
+  const anchor = memoryAnchor(state.runs, state.imageId, state.memorySourceId);
+  const params = new URLSearchParams();
+  if (state.imageId) params.set('image_id', state.imageId);
+  if (anchor) params.set('context_run_id', anchor);
+  try {
+    const snapshot = await api(`${base(caseId)}/memory-preview?${params}`);
+    if (caseId !== state.caseId || sequence !== state.previewSequence) return;
+    $('memory-preview').textContent = snapshot.status === 'needs_anchor'
+      ? '案件有多張圖片，請選擇圖片或追問來源，再引用歷史分析。'
+      : `可帶入 ${snapshot.evidence.length} 項證據，來源執行 ${short(snapshot.anchor_run_id) || '尚無'}，圖片 ${short(snapshot.scope_image_id) || '案件共用'}${snapshot.omitted_facts ? '，另有 ' + snapshot.omitted_facts + ' 筆觀察未納入字數預算' : ''}。`;
+  } catch (error) { if (caseId === state.caseId && sequence === state.previewSequence) $('memory-preview').textContent = errorText(error.message); }
+}
+$('use-memory').addEventListener('change', () => { updateButtons(); refreshMemoryPreview(); });
+$('memory-source').addEventListener('change', event => { state.memorySourceId = event.target.value; refreshMemoryPreview(); });
+$('fact-confirm').addEventListener('change', updateButtons);
+$('fact-image-scope').addEventListener('change', updateButtons);
+$('fact-form').addEventListener('submit', event => {
+  event.preventDefault();
+  action(async () => {
+    const text = $('fact-text').value.trim();
+    if (!text || !$('fact-confirm').checked) return;
+    const caseId = state.caseId;
+    await post(`${base(caseId)}/facts`, {text, image_id: $('fact-image-scope').checked ? state.imageId : null, accepted: true});
+    if (state.caseId === caseId) { $('fact-text').value = ''; $('fact-confirm').checked = false; await refreshCase(); notice('觀察已保存，帶入記憶時會標示為使用者提供的資料。', true); }
+  });
+});
 $('new-case-form').addEventListener('submit', event => {
   event.preventDefault();
   action(async () => {
