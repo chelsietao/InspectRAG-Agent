@@ -5,6 +5,7 @@ import fcntl
 import hashlib
 import io
 import json
+import re
 from pathlib import Path
 import threading
 import warnings
@@ -38,7 +39,7 @@ class NewCase(Payload):
 
 
 class NewRun(Payload):
-    kind: str = Field(pattern='^(analysis|agent)$')
+    kind: str = Field(pattern='^(analysis|references|agent)$')
     question: str = Field(default='', max_length=2000)
     image_id: str | None = Field(default=None, pattern='^[a-f0-9]{32}$')
     request_key: str = Field(min_length=1, max_length=80, pattern='^[A-Za-z0-9_-]+$')
@@ -60,6 +61,9 @@ def execute_run(root, directory, run, image):
     tools = provider = None
     try:
         tools = LocalTools(root, directory, image)
+        if run['kind'] == 'references':
+            result = tools.execute('search_reference_images', {'k': 3})
+            return {**result, 'evidence': tools.evidence}
         if run['kind'] == 'analysis':
             result = tools.execute('analyze_image', {'image_id': 'selected-image'})
             return {**result, 'evidence': tools.evidence}
@@ -117,7 +121,7 @@ def create_app(data_dir=None, executor_fn=execute_run):
         finally:
             lock.close()
 
-    api = FastAPI(title='InspectRAG local API', version='0.5.0', lifespan=lifespan)
+    api = FastAPI(title='InspectRAG local API', version='0.6.0', lifespan=lifespan)
     api.state.store = store
     api.state.data_dir = data
 
@@ -128,13 +132,34 @@ def create_app(data_dir=None, executor_fn=execute_run):
         if host not in ('127.0.0.1', 'localhost', 'testserver'):
             return JSONResponse(status_code=403, content={'detail': 'local_host_required'})
         origin = request.headers.get('origin')
-        if origin and origin not in ('http://127.0.0.1:8000', 'http://localhost:8000'):
+        if origin and origin != str(request.base_url).rstrip('/'):
             return JSONResponse(status_code=403, content={'detail': 'origin_not_allowed'})
         return await call_next(request)
 
     @api.exception_handler(KeyError)
     async def missing(request, exc):
         return JSONResponse(status_code=404, content={'detail': 'not_found'})
+
+    @api.get('/', include_in_schema=False)
+    def dashboard():
+        return FileResponse(ROOT / 'web/index.html', media_type='text/html',
+                            headers={'Cache-Control': 'no-store'})
+
+    @api.get('/assets/{name}', include_in_schema=False)
+    def web_asset(name: str):
+        allowed = {'app.css': 'text/css', 'app.js': 'text/javascript',
+                   'ui-core.mjs': 'text/javascript'}
+        if name not in allowed:
+            raise HTTPException(404, 'not_found')
+        return FileResponse(ROOT / 'web' / name, media_type=allowed[name],
+                            headers={'Cache-Control': 'no-cache'})
+
+    @api.get('/demo/bottle.png', include_in_schema=False)
+    def sample_image():
+        path = ROOT / 'bottle/test/broken_large/000.png'
+        if not path.is_file():
+            raise HTTPException(404, 'sample_data_not_installed')
+        return FileResponse(path, media_type='image/png')
 
     @api.get('/health')
     def health():
@@ -205,8 +230,8 @@ def create_app(data_dir=None, executor_fn=execute_run):
         store.get('cases', case_id)
         if body.image_id:
             store.get('images', body.image_id, case_id)
-        if body.kind == 'analysis' and not body.image_id:
-            raise HTTPException(422, 'analysis_requires_image')
+        if body.kind in ('analysis', 'references') and not body.image_id:
+            raise HTTPException(422, body.kind + '_requires_image')
         if body.kind == 'agent' and not body.question.strip():
             raise HTTPException(422, 'agent_requires_question')
         fingerprint = hashlib.sha256(json.dumps(body.model_dump(exclude={'request_key'}),
@@ -259,6 +284,28 @@ def create_app(data_dir=None, executor_fn=execute_run):
         path = data / 'runs' / run_id / 'analysis/heatmap.png'
         if not path.is_file():
             raise HTTPException(404, 'heatmap_not_available')
+        return FileResponse(path, media_type='image/png')
+
+    @api.get('/cases/{case_id}/runs/{run_id}/references/{index}')
+    def reference_file(case_id: str, run_id: str, index: int):
+        run = store.get('runs', run_id, case_id)
+        result = run.get('result') or {}
+        evidence = list((result.get('evidence') or {}).values()) + result.get('citations', [])
+        matches = next((item.get('matches', []) for item in evidence
+                        if item.get('kind') == 'image_references'), [])
+        if index < 0 or index >= min(len(matches), 3):
+            raise HTTPException(404, 'reference_not_available')
+        row = matches[index]
+        relative = row.get('path', '')
+        digest = row.get('sha256', '')
+        if not re.fullmatch(r'train/good/[0-9]{3}\.png', relative):
+            raise HTTPException(404, 'reference_not_available')
+        path = ROOT / 'bottle' / relative
+        if (not path.is_file() or path.is_symlink()
+                or not path.resolve().is_relative_to((ROOT / 'bottle/train/good').resolve())):
+            raise HTTPException(404, 'reference_not_available')
+        if not re.fullmatch(r'[a-f0-9]{64}', digest) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+            raise HTTPException(409, 'reference_source_changed')
         return FileResponse(path, media_type='image/png')
 
     @api.post('/cases/{case_id}/reports', status_code=201)

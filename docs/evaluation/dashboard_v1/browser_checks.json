@@ -1,0 +1,34 @@
+{
+  "transport": "real_browser_localhost",
+  "external_llm_calls": 0,
+  "production_demo": {
+    "case_id": "6ad5ce0ab4f7401b93d808ac3fe323bb",
+    "created_from_ui": true,
+    "loaded_fixed_dataset_sample": true,
+    "real_patchcore_analysis": true,
+    "real_faiss_reference_search": true,
+    "reload_retained_result": true
+  },
+  "isolated_fixture_checks": {
+    "separate_database": true,
+    "historical_answer_explicitly_labelled": true,
+    "question_submission_and_polling": true,
+    "answer_and_sources_rendered": true,
+    "report_draft_created": true,
+    "confirmation_disabled_until_review_checkbox": true,
+    "confirmation_saved_and_retained_after_reload": true,
+    "case_switch_cleared_previous_question_and_panels": true,
+    "html_like_title_displayed_as_text": true,
+    "no_selected_image_keeps_visual_panels_empty": true
+  },
+  "responsive_check": {
+    "width_css_pixels": 390,
+    "method": "fixed_width_browser_iframe",
+    "visually_checked": [
+      "navigation_and_upload",
+      "analysis_metrics",
+      "normal_reference_images"
+    ],
+    "physical_device_tested": false
+  }
+}

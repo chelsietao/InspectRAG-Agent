@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123b35">
+  <title>InspectRAG · 檢驗工作台</title>
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#workspace">跳到工作區</a>
+<aside class="sidebar" aria-label="案件導覽">
+  <a href="/" class="brand"><span class="brand-mark" aria-hidden="true">i<span>r</span></span><span>InspectRAG<small>視覺檢驗 · 證據問答</small></span></a>
+  <div class="sidebar-heading"><span>案件（Cases）</span><span id="case-count" class="count">0</span></div>
+  <form id="new-case-form" class="new-case-form">
+    <label for="case-title" class="sr-only">新案件名稱</label>
+    <input id="case-title" name="title" maxlength="120" placeholder="輸入新案件名稱" required>
+    <button class="button new-case" type="submit">＋ 建立案件</button>
+  </form>
+  <nav id="case-list" class="case-list" aria-label="案件列表"><p class="sidebar-hint">正在讀取案件…</p></nav>
+  <footer class="sidebar-footer"><div><span id="service-dot" class="status-dot"></span><span id="service-label">正在連線</span></div><p>本機工作區（Local Workspace）</p><a href="/docs" target="_blank" rel="noopener noreferrer">介面文件（API Docs） ↗</a></footer>
+</aside>
+<main id="workspace">
+  <header class="topbar"><span class="breadcrumb">工作區 <span>/</span> 檢驗工作台</span><button id="refresh" class="button subtle" type="button">↻ 重新整理</button></header>
+  <section class="page-heading"><div><span class="eyebrow">INSPECTION WORKSPACE</span><h1 id="case-heading">從一張照片，建立檢查紀錄</h1><p id="case-description">建立案件後，上傳產品照片，檢查外觀並查閱來源。</p></div><span class="local-badge"><span class="status-dot"></span>本機執行（Local）</span></section>
+  <div id="notice" class="notice" role="alert" hidden></div>
+  <section id="welcome" class="welcome panel"><span class="welcome-symbol" aria-hidden="true">＋</span><h2>先替這次檢查取個名字</h2><p>例如「瓶口外觀複查」，圖片、分析與回答都會留在同一個案件裡。</p><button id="focus-new-case" class="button primary">建立第一個案件 ↖</button></section>
+  <div id="case-workspace" hidden>
+    <section class="workflow" aria-label="操作流程"><span><b>01</b> 選擇圖片</span><i aria-hidden="true">→</i><span><b>02</b> 檢查外觀</span><i aria-hidden="true">→</i><span><b>03</b> 查詢與留存</span></section>
+    <div class="workspace-grid">
+      <div class="visual-column">
+        <section class="panel image-panel"><div class="panel-heading"><div><span class="eyebrow">VISUAL INSPECTION</span><h2>圖片檢查</h2></div><span id="image-count" class="tag">尚無圖片</span></div>
+          <div class="upload-bar"><label class="button secondary file-picker">＋ 上傳圖片<input id="upload-input" type="file" accept="image/png,image/jpeg" aria-label="上傳 PNG 或 JPEG 圖片"></label><button id="load-sample" class="button subtle" type="button">載入瓶子範例</button><span>PNG / JPEG · 10 MiB 內</span></div>
+          <div id="image-strip" class="image-strip" aria-label="已上傳圖片"></div>
+          <div class="image-comparison"><figure><figcaption><span>原始圖片（Original）</span><span id="image-size" class="muted"></span></figcaption><div class="image-stage"><img id="original-image" alt="目前案件選取的產品原圖" hidden><p id="original-empty" class="image-placeholder">選取或上傳一張圖片<br><small>範例取自 MVTec AD bottle 資料集</small></p></div></figure><figure><figcaption><span>異常熱圖（Heatmap）</span><span id="heatmap-state" class="muted">等待分析</span></figcaption><div class="image-stage heatmap-stage"><img id="heatmap-image" alt="所選圖片的異常熱圖，顏色表示模型反應強度" hidden><p id="heatmap-empty" class="image-placeholder">分析後顯示可疑位置<br><small>熱圖反應需要搭配分數與來源判讀</small></p></div></figure></div>
+          <div class="analysis-actions"><button id="analyze" class="button primary" type="button">分析圖片 <span aria-hidden="true">↗</span></button><button id="find-references" class="button secondary" type="button">找正常參考圖</button><span class="muted">這兩項操作在本機執行</span></div>
+          <div id="analysis-result" class="analysis-result" aria-live="polite"><div><span class="metric-label">異常分數（Score）</span><strong id="score">待分析</strong></div><div><span class="metric-label">判斷門檻（Threshold）</span><strong id="threshold">待分析</strong></div><div id="verdict" class="verdict">尚未分析</div></div>
+          <p class="panel-note">目前支援瓶子影像，分數表示與正常外觀的偏離程度，無法解讀成瑕疵機率。</p>
+        </section>
+        <section class="panel"><div class="panel-heading"><div><span class="eyebrow">NORMAL REFERENCES</span><h2>正常參考圖</h2></div><span id="reference-count" class="tag">尚未搜尋</span></div><div id="reference-list" class="reference-list"><p class="empty-text">搜尋外觀相近的正常圖片，協助對照目前的產品照片。</p></div><p class="panel-note">相似度（Cosine Similarity）用來排序外觀，無法單憑參考圖確認瑕疵成因。</p></section>
+      </div>
+      <div class="evidence-column">
+        <section class="panel question-panel"><div class="panel-heading"><div><span class="eyebrow">EVIDENCE-BASED ASSISTANT</span><h2>帶著問題，查閱來源</h2></div><span class="tag green">RAG + Agent</span></div>
+          <form id="question-form"><label for="question">這次想確認什麼？</label><textarea id="question" maxlength="2000" rows="3" placeholder="例如：異常分數代表什麼，能當成瑕疵機率嗎？" required></textarea><div class="question-suggestions"><button type="button" data-question="異常分數能當成瑕疵機率嗎，請附上來源">分數怎麼看？</button><button type="button" data-question="PatchCore 的判斷門檻如何決定，請說明限制並附上來源">門檻怎麼定？</button></div><label class="checkbox-label"><input id="include-image" type="checkbox" checked>附上目前選取的圖片</label><div class="question-submit"><span class="muted">問答使用 Groq，受免費額度限制</span><button id="ask" class="button primary" type="submit">送出問題 ↑</button></div></form>
+          <p class="panel-note">每次提問使用本次問題與勾選的圖片，案件歷史尚未加入下一輪對話。</p>
+          <div class="answer-heading"><h3>本次回答</h3><select id="answer-select" aria-label="選擇歷史問答"><option value="">尚無問答</option></select></div>
+          <div id="answer" class="answer" aria-live="polite"><p class="empty-text">回答會附上引用來源，資料不足時也會說明限制。</p></div>
+          <div id="citation-list" class="citation-list"></div>
+          <button id="draft-report" class="button secondary full-width" type="button" disabled>儲存為報告草稿</button>
+        </section>
+        <section class="panel history-panel"><div class="panel-heading"><div><span class="eyebrow">ACTIVITY</span><h2>執行紀錄</h2></div><span id="run-count" class="tag">0 筆</span></div><ol id="run-list" class="run-list"><li class="empty-text">分析與問答的狀態，會保存在這裡。</li></ol></section>
+      </div>
+    </div>
+    <section class="panel report-panel"><div class="panel-heading"><div><span class="eyebrow">REVIEW & RECORD</span><h2>報告草稿與審閱</h2></div><span id="report-count" class="tag">0 個版本</span></div><div id="report-list" class="report-list"><p class="empty-text">先完成一次有來源的問答，再儲存成報告草稿。</p></div></section>
+  </div>
+  <footer class="page-footer"><span>InspectRAG Agent · 研究與作品展示</span><span>異常提示需要人工複查，產品允收與根因判定仍需更多證據。</span></footer>
+</main>
+</body>
+</html>

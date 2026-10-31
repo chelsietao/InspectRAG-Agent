@@ -1,0 +1,47 @@
+{
+  "phase": "dashboard_v1",
+  "created_at_utc": "2026-10-31T04:28:07.855987+00:00",
+  "python_tests": 81,
+  "javascript_tests": 9,
+  "total_tests": 90,
+  "all_tests_passed": true,
+  "pip_check": "No broken requirements found.",
+  "external_llm_calls_this_phase": 0,
+  "frontend_build_dependencies_added": 0,
+  "node_test_runtime": "v24.16.0",
+  "real_image_demo": {
+    "score": 19.47983169555664,
+    "threshold": 10.19447135925293,
+    "reference_images": [
+      {
+        "path": "train/good/196.png",
+        "cosine_similarity": 0.9764832258224487
+      },
+      {
+        "path": "train/good/023.png",
+        "cosine_similarity": 0.9759594202041626
+      },
+      {
+        "path": "train/good/208.png",
+        "cosine_similarity": 0.9750884771347046
+      }
+    ]
+  },
+  "limits": [
+    "Agent/report browser paths checked using a historical-answer fixture, no new live LLM evaluation.",
+    "390px layout checked in a browser iframe, no physical mobile device verification.",
+    "Case history persists but is not added to subsequent agent context.",
+    "Local single-user service, no public deployment or authentication.",
+    "Citation identifier checks do not verify semantic support."
+  ],
+  "implementation_snapshot_sha256": {
+    "app/backend.py": "604f71c08c7a294b124502c1688419f43ee3effdd02cd2dfde17e64b4f863545",
+    "web/app.css": "ff1b239c68cbe8ae138e6eb833ad450b114bcb79c83ea86a463754b7082ace04",
+    "web/app.js": "3ef90a25c6be413ab44201f1862118a5b555d94ee70f2848d859d12a2443de63",
+    "web/index.html": "e864a244f9996d7abfc5764e26050302261b08054503d7e2d189f70b675d35b0",
+    "web/ui-core.mjs": "3e378e2130a1ce849fd18dc55a31812fa145b44eecbd031ab23f3085da4abdf1",
+    "tests/test_dashboard.py": "37226433190955f361b9537ab704757a510d11f0d851b97b13c67cfb2dea9671",
+    "tests/test_ui_core.mjs": "fc8d3ec87022bc49a93f726650e90547a009b554759446e180ace4d7282ee445",
+    "pyproject.toml": "6aaeec9c09ddc465774b7cebe64376bac2b66468fcaf648745907b73b84cacb6"
+  }
+}
