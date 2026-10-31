@@ -1,0 +1,129 @@
+{
+  "status": "rate_limited",
+  "answer": null,
+  "error": "rate_limited",
+  "citations": [],
+  "validation": {
+    "citation_ids_valid": null,
+    "semantic_support": "not_automatically_verified"
+  },
+  "provider": "groq",
+  "model": "qwen/qwen3.8-27b",
+  "prompt_version": "inspection-agent-v1",
+  "prompt_sha256": "f6714ad67624810ec211747ced693806d946831d3c3f7871a18341b3fee25c42",
+  "created_at_utc": "2026-10-30T14:25:17.737713+00:00",
+  "api_calls": 4,
+  "tool_calls": 5,
+  "usage": [
+    {
+      "call": 1,
+      "usage": {
+        "completion_tokens": 95,
+        "prompt_tokens": 1396,
+        "total_tokens": 1491,
+        "completion_time": 0.193662034,
+        "completion_tokens_details": null,
+        "prompt_time": 0.100174241,
+        "prompt_tokens_details": null,
+        "queue_time": 0.075020417,
+        "total_time": 0.293836275
+      },
+      "returned_model": "qwen/qwen3.8-27b",
+      "finish_reason": "tool_calls",
+      "context_characters": 3303
+    },
+    {
+      "call": 2,
+      "usage": {
+        "completion_tokens": 50,
+        "prompt_tokens": 2600,
+        "total_tokens": 2650,
+        "completion_time": 0.099337467,
+        "completion_tokens_details": null,
+        "prompt_time": 0.185124719,
+        "prompt_tokens_details": null,
+        "queue_time": 0.053786161,
+        "total_time": 0.284462186
+      },
+      "returned_model": "qwen/qwen3.8-27b",
+      "finish_reason": "tool_calls",
+      "context_characters": 6054
+    },
+    {
+      "call": 3,
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 2684,
+        "total_tokens": 2712,
+        "completion_time": 0.056478131,
+        "completion_tokens_details": null,
+        "prompt_time": 0.190607628,
+        "prompt_tokens_details": null,
+        "queue_time": 0.064165431,
+        "total_time": 0.247085759
+      },
+      "returned_model": "qwen/qwen3.8-27b",
+      "finish_reason": "tool_calls",
+      "context_characters": 6410
+    }
+  ],
+  "seconds": 12.011937084025703,
+  "tool_trace": [
+    {
+      "step": 1,
+      "tool": "analyze_image",
+      "status": "succeeded",
+      "seconds": 3.2257021659752354,
+      "arguments": {
+        "image_id": "selected-image"
+      }
+    },
+    {
+      "step": 2,
+      "tool": "search_reference_images",
+      "status": "succeeded",
+      "seconds": 2.736978333967272,
+      "arguments": {
+        "image_id": "selected-image",
+        "k": 3
+      }
+    },
+    {
+      "step": 3,
+      "tool": "search_documents",
+      "status": "succeeded",
+      "seconds": 3.2012390000163577,
+      "arguments": {
+        "query": "分數",
+        "k": 3
+      }
+    },
+    {
+      "step": 4,
+      "tool": "read_evidence",
+      "status": "error",
+      "seconds": 9.154196595773101e-05,
+      "arguments": {
+        "chunk_ids": [
+          "doc:config-no-probability",
+          "doc:config-threshold",
+          "doc:method-neighbor"
+        ]
+      }
+    },
+    {
+      "step": 5,
+      "tool": "search_documents",
+      "status": "succeeded",
+      "seconds": 8.049997268244624e-05,
+      "arguments": {
+        "query": "分數",
+        "k": 3
+      }
+    }
+  ],
+  "limitations": [
+    "引用檢查只驗證本輪來源編號，主張與證據的語意一致性仍需人工審閱。",
+    "程式不會升級付費方案，但無法透過模型 API 驗證帳號的計費層級。"
+  ]
+}

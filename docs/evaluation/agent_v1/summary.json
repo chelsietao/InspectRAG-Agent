@@ -1,0 +1,60 @@
+{
+  "provider": "groq",
+  "model": "qwen/qwen3.8-27b",
+  "runs": [
+    {
+      "run": "agent_live_document_v1",
+      "status": "answered",
+      "prompt_version": "inspection-agent-v1",
+      "api_calls": 2,
+      "tool_calls": 4,
+      "error": null,
+      "reported_total_tokens": 4317,
+      "api_call_count_includes_rejected_request": false
+    },
+    {
+      "run": "agent_live_image_v1",
+      "status": "rate_limited",
+      "prompt_version": "inspection-agent-v1",
+      "api_calls": 4,
+      "tool_calls": 5,
+      "error": "rate_limited",
+      "reported_total_tokens": 6853,
+      "api_call_count_includes_rejected_request": true
+    },
+    {
+      "run": "agent_live_image_v2",
+      "status": "answered",
+      "prompt_version": "inspection-agent-v2",
+      "api_calls": 2,
+      "tool_calls": 4,
+      "error": null,
+      "reported_total_tokens": 4765,
+      "api_call_count_includes_rejected_request": false
+    }
+  ],
+  "full_test_count": 50,
+  "agent_test_count": 26,
+  "all_tests_passed": true,
+  "billing_tier_verified_by_api": false,
+  "automatic_retries": 0,
+  "automatic_model_fallback": false,
+  "review_status": "assistant_checked_numbers_and_sources_pending_user_review",
+  "limitations": [
+    "僅為少量整合案例，尚非獨立固定任務評估集。",
+    "缺圖與資料不足等分支以離線模擬測試驗證，尚未完成對應的真實模型題集。",
+    "程式只驗證引用編號，語意支持度仍需要人工審閱。",
+    "帳號需維持免費方案，程式無法透過模型 API 查證計費層級。"
+  ],
+  "implementation_snapshot_sha256": {
+    "app/__init__.py": "09190a5140d8241d9f97a7dbc5ed0bc19e53a3ef0d28ba0ea132e76c0eab0a36",
+    "app/agent_runtime.py": "5ea8afcaa870aee88559a0810a403778cabe4c0f1d93d1390295c1d318d92856",
+    "app/agent_schemas.py": "a87fc70fffd3528072d084681c6ac83e7484d7d20ab69b8ce72be42b022da1b8",
+    "app/groq_provider.py": "29c9f1f783b9b0f05eb82b5b19cadd9089470e65a16cc2b30666f786caea9685",
+    "app/inspection_tools.py": "1ccfc2f4dfcf5f75ec99a19171ad6f19db52c4fe161797e10d2266915cc536d1",
+    "configs/agent.json": "caa43ed3d40f9d89caa1950280f595c200939c19143d5b2970c0231ad97281f7",
+    "prompts/inspection_agent_v2.txt": "71b8418ca50e69a6ca2b3ca8b7b955e661187eb4607b6553c5c8a764100e4e50",
+    "scripts/run_agent.py": "6d1fb3f17efae79bfb1b44069239b4fe8f65cb194b312c070a019c356e716f5f"
+  },
+  "snapshot_note": "這些雜湊描述交付時的新版實作，v1 範例保留為修正前的歷史執行紀錄。"
+}

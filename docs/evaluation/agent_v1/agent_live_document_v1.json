@@ -1,0 +1,151 @@
+{
+  "status": "answered",
+  "answer": {
+    "status": "answered",
+    "claims": [
+      {
+        "text": "異常分數（Anomaly Score）表示目前特徵與正常外觀的偏離程度，數值受模型和設定影響，尚未做機率校準，因此 0.8 或其他分數都不能解讀成瑕疵機率。",
+        "evidence_ids": [
+          "doc:config-no-probability"
+        ]
+      },
+      {
+        "text": "影像門檻（Image Threshold）採 30 張正常校準圖片的最高分數，約為 10.19447，分數大於門檻才判為異常，門檻在讀取測試結果前固定，沒有使用測試標籤調整。",
+        "evidence_ids": [
+          "doc:config-threshold"
+        ]
+      },
+      {
+        "text": "Anomalib 的 PatchCore 擷取預訓練骨幹的中間層特徵，推論時搜尋特徵庫中的最近鄰（Nearest Neighbor），以局部特徵距離產生異常分數與異常分布圖。",
+        "evidence_ids": [
+          "doc:method-neighbor"
+        ]
+      }
+    ],
+    "limitations": [
+      "未提供具體圖片，無法示範實際分數與門檻的比較。",
+      "文件未提供機率校準（calibration）的具體方法或替代指標。"
+    ],
+    "follow_up_question": null
+  },
+  "error": null,
+  "citations": [
+    {
+      "id": "doc:config-no-probability",
+      "kind": "document",
+      "title": "分數與機率",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/phase2_vision.md",
+      "source_locator": "phase-two guide",
+      "text": "異常分數（Anomaly Score）表示目前特徵與正常外觀的偏離程度，數值受模型和設定影響，尚未做機率校準，因此 0.8 或其他分數都不能解讀成瑕疵機率。",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "id": "doc:config-threshold",
+      "kind": "document",
+      "title": "影像判斷門檻",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/phase2_vision.md",
+      "source_locator": "phase-two guide",
+      "text": "影像門檻（Image Threshold）採 30 張正常校準圖片的最高分數，約為 10.19447，分數大於門檻才判為異常，門檻在讀取測試結果前固定，沒有使用測試標籤調整。",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "id": "doc:method-neighbor",
+      "kind": "document",
+      "title": "最近鄰與異常分數",
+      "source_url": "https://anomalib.readthedocs.io/en/latest/markdown/guides/reference/models/image/patchcore.html",
+      "source_locator": "PatchCore / Architecture",
+      "text": "Anomalib 的 PatchCore 擷取預訓練骨幹的中間層特徵，推論時搜尋特徵庫中的最近鄰（Nearest Neighbor），以局部特徵距離產生異常分數與異常分布圖。",
+      "review_status": "assistant_source_checked_pending_user_review"
+    }
+  ],
+  "validation": {
+    "citation_ids_valid": true,
+    "semantic_support": "not_automatically_verified"
+  },
+  "provider": "groq",
+  "model": "qwen/qwen3.8-27b",
+  "prompt_version": "inspection-agent-v1",
+  "prompt_sha256": "f6714ad67624810ec211747ced693806d946831d3c3f7871a18341b3fee25c42",
+  "created_at_utc": "2026-10-30T14:23:55.188021+00:00",
+  "api_calls": 2,
+  "tool_calls": 4,
+  "usage": [
+    {
+      "call": 1,
+      "usage": {
+        "completion_tokens": 85,
+        "prompt_tokens": 1386,
+        "total_tokens": 1471,
+        "completion_time": 0.189517668,
+        "completion_tokens_details": null,
+        "prompt_time": 0.097553618,
+        "prompt_tokens_details": null,
+        "queue_time": 0.077261213,
+        "total_time": 0.287071286
+      },
+      "returned_model": "qwen/qwen3.8-27b",
+      "finish_reason": "tool_calls",
+      "context_characters": 3277
+    },
+    {
+      "call": 2,
+      "usage": {
+        "completion_tokens": 294,
+        "prompt_tokens": 2552,
+        "total_tokens": 2846,
+        "completion_time": 0.599060158,
+        "completion_tokens_details": null,
+        "prompt_time": 0.18758382,
+        "prompt_tokens_details": null,
+        "queue_time": 0.181239031,
+        "total_time": 0.786643978
+      },
+      "returned_model": "qwen/qwen3.8-27b",
+      "finish_reason": "tool_calls",
+      "context_characters": 6547
+    }
+  ],
+  "seconds": 6.7745088749798015,
+  "tool_trace": [
+    {
+      "step": 1,
+      "tool": "search_documents",
+      "status": "succeeded",
+      "seconds": 4.626990833028685,
+      "arguments": {
+        "query": "異常分數",
+        "k": 3
+      }
+    },
+    {
+      "step": 2,
+      "tool": "search_documents",
+      "status": "succeeded",
+      "seconds": 0.006729917018674314,
+      "arguments": {
+        "query": "瑕疵機率",
+        "k": 3
+      }
+    },
+    {
+      "step": 3,
+      "tool": "search_documents",
+      "status": "succeeded",
+      "seconds": 0.0066900840029120445,
+      "arguments": {
+        "query": "分數",
+        "k": 3
+      }
+    },
+    {
+      "step": 4,
+      "tool": "submit_answer",
+      "status": "succeeded",
+      "seconds": 6.129097891971469e-05
+    }
+  ],
+  "limitations": [
+    "引用檢查只驗證本輪來源編號，主張與證據的語意一致性仍需人工審閱。",
+    "程式不會升級付費方案，但無法透過模型 API 驗證帳號的計費層級。"
+  ]
+}

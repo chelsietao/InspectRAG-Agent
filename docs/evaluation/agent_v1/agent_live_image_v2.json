@@ -1,0 +1,202 @@
+{
+  "status": "answered",
+  "answer": {
+    "status": "answered",
+    "claims": [
+      {
+        "text": "選取圖片分析結果：異常分數 19.4798，門檻 10.1945，判定為異常（is_anomalous=true），僅適用於 MVTec bottle 類似影像，未做產品類別或真實產線適用性驗證，異常分數不是瑕疵機率。",
+        "evidence_ids": [
+          "analysis:selected-image"
+        ]
+      },
+      {
+        "text": "找到三張外觀相似的正常參考圖：train/good/196.png（cosine 0.9765）、train/good/023.png（cosine 0.9760）、train/good/208.png（cosine 0.9751），結果僅代表外觀相近，未判定瑕疵類型、根因或允收狀態。",
+        "evidence_ids": [
+          "references:selected-image"
+        ]
+      },
+      {
+        "text": "異常分數（Anomaly Score）表示目前特徵與正常外觀的偏離程度，數值受模型和設定影響，尚未做機率校準，因此 0.8 或其他分數都不能解讀成瑕疵機率。",
+        "evidence_ids": [
+          "doc:config-no-probability"
+        ]
+      },
+      {
+        "text": "影像門檻（Image Threshold）採 30 張正常校準圖片的最高分數，約為 10.19447，分數大於門檻才判為異常，門檻在讀取測試結果前固定，沒有使用測試標籤調整。",
+        "evidence_ids": [
+          "doc:config-threshold"
+        ]
+      },
+      {
+        "text": "PatchCore 擷取預訓練骨幹的中間層特徵，推論時搜尋特徵庫中的最近鄰（Nearest Neighbor），以局部特徵距離產生異常分數與異常分布圖。",
+        "evidence_ids": [
+          "doc:method-neighbor"
+        ]
+      }
+    ],
+    "limitations": [
+      "異常分數非瑕疵機率，未做機率校準",
+      "僅適用於 MVTec bottle 類似影像，未驗證真實產線適用性",
+      "參考圖僅代表外觀相似，未判定瑕疵類型、根因或允收狀態",
+      "未執行產品類別或真實產線適用性驗證"
+    ],
+    "follow_up_question": null
+  },
+  "error": null,
+  "citations": [
+    {
+      "id": "analysis:selected-image",
+      "kind": "analysis",
+      "title": "本次圖片分析",
+      "score": 19.47983169555664,
+      "threshold": 10.19447135925293,
+      "is_anomalous": true,
+      "checkpoint_sha256": "733ac3ad370cc76a585f0461195e4e044b9225e2b0328fbc3c842180d4767e15",
+      "supported_category": "bottle",
+      "note": "僅適用於 MVTec bottle 類似影像，未執行產品類別或真實產線適用性驗證，異常分數不是瑕疵機率。",
+      "heatmap_path": "artifacts/agent_live_image_v2/analysis/heatmap.png"
+    },
+    {
+      "id": "doc:config-no-probability",
+      "kind": "document",
+      "title": "分數與機率",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/phase2_vision.md",
+      "source_locator": "phase-two guide",
+      "text": "異常分數（Anomaly Score）表示目前特徵與正常外觀的偏離程度，數值受模型和設定影響，尚未做機率校準，因此 0.8 或其他分數都不能解讀成瑕疵機率。",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "id": "doc:config-threshold",
+      "kind": "document",
+      "title": "影像判斷門檻",
+      "source_url": "https://github.com/chelsietao/InspectRAG-Agent/blob/main/docs/phase2_vision.md",
+      "source_locator": "phase-two guide",
+      "text": "影像門檻（Image Threshold）採 30 張正常校準圖片的最高分數，約為 10.19447，分數大於門檻才判為異常，門檻在讀取測試結果前固定，沒有使用測試標籤調整。",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "id": "doc:method-neighbor",
+      "kind": "document",
+      "title": "最近鄰與異常分數",
+      "source_url": "https://anomalib.readthedocs.io/en/latest/markdown/guides/reference/models/image/patchcore.html",
+      "source_locator": "PatchCore / Architecture",
+      "text": "Anomalib 的 PatchCore 擷取預訓練骨幹的中間層特徵，推論時搜尋特徵庫中的最近鄰（Nearest Neighbor），以局部特徵距離產生異常分數與異常分布圖。",
+      "review_status": "assistant_source_checked_pending_user_review"
+    },
+    {
+      "id": "references:selected-image",
+      "kind": "image_references",
+      "title": "本次正常參考圖搜尋",
+      "matches": [
+        {
+          "path": "train/good/196.png",
+          "sha256": "5b2178c5d9c14f180faa21a3ed4f1f5210b8b9b539eeb31df44df5bb71b181ed",
+          "pixel_sha256": "20e00c30a4214a0bb66db922c7b8b1e4bda514b913014e1c50eece58c21ebd6b",
+          "cosine_similarity": 0.9764832258224487
+        },
+        {
+          "path": "train/good/023.png",
+          "sha256": "5bebcd96862ca137cf0a1be85230cffb0098bd06636747c98dd3109c223dd3a0",
+          "pixel_sha256": "53e1e852130d33408dce881f2eacaf34323e8664a3d55d1746a61d841e9f499e",
+          "cosine_similarity": 0.9759594202041626
+        },
+        {
+          "path": "train/good/208.png",
+          "sha256": "87bd5efa31f4d982b18104060c2a105c3981fa91f47b28b6be8fac2170b1b80d",
+          "pixel_sha256": "5e40e15e915a2acd44eadeeb3e9460e48a74f64c29ee60a648192fc71ecb56a5",
+          "cosine_similarity": 0.9750884771347046
+        }
+      ],
+      "note": "結果是外觀相似的正常參考圖，未判定瑕疵類型、根因或允收狀態。"
+    }
+  ],
+  "validation": {
+    "citation_ids_valid": true,
+    "semantic_support": "not_automatically_verified"
+  },
+  "provider": "groq",
+  "model": "qwen/qwen3.8-27b",
+  "prompt_version": "inspection-agent-v2",
+  "prompt_sha256": "71b8418ca50e69a6ca2b3ca8b7b955e661187eb4607b6553c5c8a764100e4e50",
+  "created_at_utc": "2026-10-30T14:27:11.546904+00:00",
+  "api_calls": 2,
+  "tool_calls": 4,
+  "usage": [
+    {
+      "call": 1,
+      "usage": {
+        "completion_tokens": 95,
+        "prompt_tokens": 1482,
+        "total_tokens": 1577,
+        "completion_time": 0.187415197,
+        "completion_tokens_details": null,
+        "prompt_time": 0.105399386,
+        "prompt_tokens_details": null,
+        "queue_time": 0.079180044,
+        "total_time": 0.292814583
+      },
+      "returned_model": "qwen/qwen3.8-27b",
+      "finish_reason": "tool_calls",
+      "context_characters": 3474
+    },
+    {
+      "call": 2,
+      "usage": {
+        "completion_tokens": 502,
+        "prompt_tokens": 2686,
+        "total_tokens": 3188,
+        "completion_time": 1.036118866,
+        "completion_tokens_details": null,
+        "prompt_time": 0.19126328,
+        "prompt_tokens_details": null,
+        "queue_time": 0.08173599,
+        "total_time": 1.227382146
+      },
+      "returned_model": "qwen/qwen3.8-27b",
+      "finish_reason": "tool_calls",
+      "context_characters": 6225
+    }
+  ],
+  "seconds": 12.502364374988247,
+  "tool_trace": [
+    {
+      "step": 1,
+      "tool": "analyze_image",
+      "status": "succeeded",
+      "seconds": 3.7242030419874936,
+      "arguments": {
+        "image_id": "selected-image"
+      }
+    },
+    {
+      "step": 2,
+      "tool": "search_reference_images",
+      "status": "succeeded",
+      "seconds": 2.960675500042271,
+      "arguments": {
+        "image_id": "selected-image",
+        "k": 3
+      }
+    },
+    {
+      "step": 3,
+      "tool": "search_documents",
+      "status": "succeeded",
+      "seconds": 3.307873874960933,
+      "arguments": {
+        "query": "分數",
+        "k": 3
+      }
+    },
+    {
+      "step": 4,
+      "tool": "submit_answer",
+      "status": "succeeded",
+      "seconds": 8.370802970603108e-05
+    }
+  ],
+  "limitations": [
+    "引用檢查只驗證本輪來源編號，主張與證據的語意一致性仍需人工審閱。",
+    "程式不會升級付費方案，但無法透過模型 API 驗證帳號的計費層級。"
+  ]
+}

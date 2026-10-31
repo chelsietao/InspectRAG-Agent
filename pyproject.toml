@@ -1,7 +1,7 @@
 [project]
 name = "inspectrag-agent"
 version = "0.1.0"
-description = "Evidence-backed visual inspection workspace - retrieval stage"
+description = "Evidence-backed visual inspection workspace - agent stage"
 requires-python = ">=3.12,<3.13"
 dependencies = ["Pillow==12.3.0"]
 
@@ -17,5 +17,12 @@ retrieval = [
     "timm==1.0.30", "numpy==2.5.4", "scikit-learn==1.9.1", "matplotlib==3.11.2",
 ]
 
+agent = [
+    "groq==1.7.0", "pydantic==2.14.2",
+    "sentence-transformers==6.2.0", "transformers==5.22.1", "faiss-cpu==1.15.1",
+    "anomalib==2.7.0", "torch==2.15.0", "torchvision==0.29.2",
+    "timm==1.0.30", "numpy==2.5.4", "scikit-learn==1.9.1", "matplotlib==3.11.2",
+]
+
 [tool.inspectrag]
-stage = "retrieval"
+stage = "agent"
