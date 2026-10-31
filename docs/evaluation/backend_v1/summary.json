@@ -1,0 +1,30 @@
+{
+  "phase": "backend_v1",
+  "full_test_count": 70,
+  "backend_test_count": 20,
+  "all_tests_passed": true,
+  "pip_check": "No broken requirements found.",
+  "external_llm_calls_this_phase": 0,
+  "real_local_analysis": {
+    "status": "succeeded",
+    "score": 19.47983169555664,
+    "same_request_returns_same_run": true,
+    "restart_preserves_result": true,
+    "heatmap_http_status": 200
+  },
+  "limits": [
+    "Local single-user, single-process macOS/Linux implementation, no public authentication.",
+    "Case history is persisted but is not injected into subsequent agent context.",
+    "Agent and report API paths tested with offline doubles, no new live Groq evaluation.",
+    "Interrupted jobs are marked failed on startup, never automatically retried.",
+    "Citation identifiers checked by existing runner, semantic support requires human review."
+  ],
+  "implementation_snapshot_sha256": {
+    "app/backend.py": "98c1af30fef0fc3c34263b1f66fdd69b88703931f2b0bcc35abac26c08bee19e",
+    "app/case_store.py": "6a7272966f1ed2d43b38c03d8f9c0e9c478c3c62516fde5f8ce5f53c7d71b73b",
+    "tests/test_backend.py": "16e397afa49a78218962e51ebb8c938ff694a1861eb782aad339392848fb1fce",
+    "scripts/demo_backend.py": "81c052d29a58c437f95ceed9aa07151c76cc9bbf706dc75774844a9ac5c869fc",
+    "requirements-backend.txt": "32632faf91fc36f04e553277c3279f8afd390a30d34beb104f068dc68182eeab",
+    "pyproject.toml": "36a184e00c23623658992de4b77a8a8353c82a498a31b5d9b25bf5df3a216e12"
+  }
+}

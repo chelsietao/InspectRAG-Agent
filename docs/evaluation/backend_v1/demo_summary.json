@@ -1,0 +1,37 @@
+{
+  "case_id": "d57fbdc68fab41589dff86ae1e339b5d",
+  "run_id": "5407a76883c14a779c056ddaa8e1c7c3",
+  "status": "succeeded",
+  "source_image": "bottle/test/broken_large/000.png",
+  "image_upload_http_status": 201,
+  "submission_http_status": 202,
+  "same_request_returns_same_run": true,
+  "heatmap_http_status": 200,
+  "result": {
+    "status": "ok",
+    "evidence_id": "analysis:selected-image",
+    "score": 19.47983169555664,
+    "threshold": 10.19447135925293,
+    "is_anomalous": true,
+    "checkpoint_sha256": "733ac3ad370cc76a585f0461195e4e044b9225e2b0328fbc3c842180d4767e15",
+    "supported_category": "bottle",
+    "note": "僅適用於 MVTec bottle 類似影像，未執行產品類別或真實產線適用性驗證，異常分數不是瑕疵機率。",
+    "evidence": {
+      "analysis:selected-image": {
+        "id": "analysis:selected-image",
+        "kind": "analysis",
+        "title": "本次圖片分析",
+        "score": 19.47983169555664,
+        "threshold": 10.19447135925293,
+        "is_anomalous": true,
+        "checkpoint_sha256": "733ac3ad370cc76a585f0461195e4e044b9225e2b0328fbc3c842180d4767e15",
+        "supported_category": "bottle",
+        "note": "僅適用於 MVTec bottle 類似影像，未執行產品類別或真實產線適用性驗證，異常分數不是瑕疵機率。",
+        "heatmap_path": "artifacts/backend_demo_v1/runs/5407a76883c14a779c056ddaa8e1c7c3/analysis/heatmap.png"
+      }
+    }
+  },
+  "external_llm_calls": 0,
+  "transport": "in_process_asgi_testclient",
+  "restart_preserves_result": true
+}
